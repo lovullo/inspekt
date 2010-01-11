@@ -977,93 +977,39 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 *
+	 * Dataprovider for Inspekt::isUri() Testing
 	 */
-	public function testIsUri()
+	public function isUriProvider()
 	{
-		$input = '//lessthan';
-		$this->assertFalse(Inspekt::isUri($input));
+		return array(
+			array(false, '//lessthan'),
+			array(true,  'ftp://funky7:boooboo@123.444.999.12/'),
+			array(false, 'http://spinaltap.micro.umn.edu/00/Weather/California/Los%lngeles'),
+			array(true,  'http://funkatron.com/////////12341241'),
+			array(true,  'http://funkatron.com:12'),
+			array(true,  'http://funkatron.com:8000/#foo'),
+			array(true,  'https://funkatron.com'),
+			array(true,  'https://funkatron.com:42/funky.php?foo[]=bar'),
+			array(true,  'http://www.w3.org/2001/XMLSchema'),
+			array(true,  'http://news.bbc.co.uk/2/hi/middle_east/8277040.stm'),
+			array(true,  'http://www.google.com/?url=http://www.google.com&confuse=false'),
+			array(true,  'http://user:pass@domain.com:8080/some/path/stuff.php?var=1&moo=oink#anchor1'),
+		);
 	}
 
 	/**
-	 *
+	 * @dataProvider isUriProvider
 	 */
-	public function testIsUri1()
+	public function testIsUri($expected, $uri)
 	{
-		$input = 'ftp://funky7:boooboo@123.444.999.12/';
-		$this->assertTrue(Inspekt::isUri($input));
-	}
-
-	/**
-	 *
-	 */
-	public function testIsUri2()
-	{
-		$input = 'http://spinaltap.micro.umn.edu/00/Weather/California/Los%lngeles';
-		$this->assertFalse(Inspekt::isUri($input));
-	}
-
-	/**
-	 *
-	 */
-	public function testIsUri3()
-	{
-		$input = 'http://funkatron.com/////////12341241';
-		$this->assertTrue(Inspekt::isUri($input));
-	}
-
-	/**
-	 *
-	 */
-	public function testIsUri4()
-	{
-		$input = 'http://funkatron.com:12';
-		$this->assertTrue(Inspekt::isUri($input));
-	}
-
-	/**
-	 *
-	 */
-	public function testIsUri5()
-	{
-		$input = 'http://funkatron.com:8000/#foo';
-		$this->assertTrue(Inspekt::isUri($input));
-	}
-
-	/**
-	 *
-	 */
-	public function testIsUri6()
-	{
-		$input = 'https://funkatron.com';
-		$this->assertTrue(Inspekt::isUri($input));
-	}
-
-	/**
-	 *
-	 */
-	public function testIsUri7()
-	{
-		$input = 'https://funkatron.com:42/funky.php?foo[]=bar';
-		$this->assertTrue(Inspekt::isUri($input));
-	}
-
-	/**
-	 *
-	 */
-	public function testIsUri8()
-	{
-		$input = 'http://www.w3.org/2001/XMLSchema';
-		$this->assertTrue(Inspekt::isUri($input));
-	}
-
-	/**
-	 *
-	 */
-	public function testIsUri9()
-	{
-		$input = 'http://news.bbc.co.uk/2/hi/middle_east/8277040.stm';
-		$this->assertTrue(Inspekt::isUri($input));
+		if ($expected === true)
+		{
+			$this->assertTrue(Inspekt::isUri($uri));
+		}
+		else
+		{
+			$this->assertFalse(Inspekt::isUri($uri));
+		}
 	}
 
 	/**
