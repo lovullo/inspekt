@@ -807,6 +807,8 @@ class InspektTest extends PHPUnit_Framework_TestCase
 			array('moo[test^]',  array('o', 'e', '[', '^'),        'oo[e^'),
 			array('((OiNk\\',    array('(', 'i', '\\'),            '((i\\'),
 			array('some stuf|f', array(' ', 's', '|', 't', 'm'),   'sm st|'),
+			array('test-toast',  array('-', '-', '-'),             '-'),
+			array('test-toast',  array('-'),                       '-'),
 		);
 	}
 

@@ -560,7 +560,7 @@ class Inspekt
 		if (Inspekt::isArrayOrArrayObject($value)) {
 			return Inspekt::_walkArray($value, 'getChars');
 		} else {
-			$regex_chars = array();
+			$regex_chars = "";
 			
 			// Make sure we are working with an array
 			if (!is_array($valid_chars)) {
@@ -584,25 +584,35 @@ class Inspekt
 					// Handle "macro" values
 					switch ($char) {
 					case 'a-z':
-						$regex_chars[] = 'a-z';
+						$regex_chars .= 'a-z';
 						break;
 					case 'A-Z':
-						$regex_chars[] = 'A-Z';
+						$regex_chars .= 'A-Z';
 						break;
 					case '0-9':
-						$regex_chars[] = '0-9';
+						$regex_chars .= '0-9';
 						break;
 					default:
 						trigger_error('Only single characters are allowed in the valid character array', E_USER_WARNING);
 					}
 				} else {
-					// Add Single Character to "Allowed" Regex List
-					$regex_chars[] = $char;
+					if ($char == "-") {
+						// The '-' inside regex square brackets denotes a range separator;
+						// If you want to test as a literal (which we do in this case), it must be placed
+						// first (or last, technically).
+						$regex_chars = "-" . $regex_chars;
+					} elseif ($char == "/") {
+						// The / character is used as a delimiter in preg_replace below, so it must be escaped
+						$regex_chars .= "\/";
+					} else {
+						// Add Single Character to "Allowed" Regex List
+						$regex_chars .= preg_quote($char);
+					}
 				}
 			}
 			
 			// Apply Regex to value
-			return preg_replace('/[^' . preg_quote(implode('', $regex_chars)) . ']/', '', $value);
+			return preg_replace('/[^' . $regex_chars . ']/', '', $value);
 		}
 	}
 
