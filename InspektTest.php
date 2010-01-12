@@ -738,6 +738,87 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * @expectedException PHPUnit_Framework_Error
+	 */
+	public function testGetCharListMissingSecondParam()
+	{
+		Inspekt::getChars('MyInput!');
+	}
+
+	/**
+	 * @expectedException PHPUnit_Framework_Error
+	 */
+	public function testGetCharListInvalidSecondParam()
+	{
+		Inspekt::getChars('MyInput!', 'This Should be an Array!');
+	}
+
+	/**
+	 * @expectedException PHPUnit_Framework_Error
+	 */
+	public function testGetCharListInvalidSecondParamValueMacro()
+	{
+		Inspekt::getChars('MyInput!', array('a-z', 'bad', '_', '@'));
+	}
+
+	/**
+	 * @expectedException PHPUnit_Framework_Error
+	 */
+	public function testGetCharListInvalidSecondParamValueArray()
+	{
+		Inspekt::getChars('MyInput!', array('a-z', array('b', 'a', 'd'), '_', '@'));
+	}
+
+	/**
+	 *
+	 */
+	public function testGetCharListEmpty()
+	{
+		$this->assertSame('', Inspekt::getChars('', array()));
+	}
+
+	/**
+	 *
+	 */
+	public function testGetCharListEmptyArray()
+	{
+		$this->assertSame(
+			array('', ''),
+			Inspekt::getChars(array('', ''), array())
+		);
+	}
+
+	/**
+	 * Dataprovider for testGetCharListValidList test
+	 */
+	public function getCharsProvider()
+	{
+		return array(
+			array('bunny!',      array('a-z', '!'),                'bunny!'),
+			array('OiNk681',     array('0-9', 'A-Z', 'a-z'),       'OiNk681'),
+			array('bunny!',      array('A-Z', '!'),                '!'),
+			array('user_name',   array('a-z', 'A-Z', '_'),         'user_name'),
+			array('t0talf41l',   array('A-Z', '@', '.'),           ''),
+			array('moo@you',     array('a-z', 'm', 'o', 'u', '@'), 'moo@you'),
+			array('some/stuff',  array('t', 's', 'u', '/'),        's/stu'),
+			array('1234567890',  array('0-9', '9', '1', '0'),      '1234567890'),
+			array('12345678-',   array('0', '-', '9'),             '-'),
+			array('nothing',     array('a', '-', 'z'),             ''),
+			array('moo[test^]',  array('o', 'e', '[', '^'),        'oo[e^'),
+			array('((OiNk\\',    array('(', 'i', '\\'),            '((i\\'),
+			array('some stuf|f', array(' ', 's', '|', 't', 'm'),   'sm st|'),
+		);
+	}
+
+	/**
+	 * @dataProvider getCharsProvider
+	 */
+	public function testGetCharListValidList($input, $valid_chars, $output)
+	{
+		$this->assertSame($output, Inspekt::getChars($input, $valid_chars));
+	}
+
+	/**
 	 * @link https://www.paypal.com/en_US/vhelp/paypalmanager_help/credit_card_numbers.htm
 	 */
 	public function testIsCcnum()

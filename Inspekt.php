@@ -108,7 +108,7 @@ class Inspekt
 	 * @param string  $config_file
 	 * @param boolean $strict whether or not to nullify the superglobal array
 	 * @return Inspekt_Cage
-	 * 
+	 *
 	 * @assert()
 	 */
 	static public function makeServerCage($config_file=NULL, $strict=TRUE) {
@@ -301,9 +301,9 @@ class Inspekt
 	/**
 	 * Sets and/or retrieves whether we should use the PHP filter extensions where possible
 	 * If a param is passed, it will set the state in addition to returning it
-	 * 
+	 *
 	 * We use this method of storing in a static class property so that we can access the value outside of class instances
-	 * 
+	 *
 	 * @param boolean $state optional
 	 * @return boolean
 	 */
@@ -322,7 +322,7 @@ class Inspekt
 	 *
 	 * This should be considered a "protected" method, and not be called
 	 * outside of the class
-	 * 
+	 *
 	 *
 	 * @param array|ArrayObject $input
 	 * @param string $inspektor  The name of a static filtering method, like get* or no*
@@ -386,7 +386,7 @@ class Inspekt
 	 * Converts an array into an ArrayObject. We use ArrayObjects when walking arrays in Inspekt
 	 * @param array
 	 * @return ArrayObject
-	 * 
+	 *
 	 */
 	static public function convertArrayToArrayObject(&$arr) {
 		foreach ($arr as $key => $value) {
@@ -428,7 +428,7 @@ class Inspekt
      *
      * @tag filter
      * @static
-     * 
+     *
      * @assert('1)@*(&UR)HQ)W(*(HG))') === '1URHQWHG'
      */
 	static public function getAlnum($value)
@@ -448,7 +448,7 @@ class Inspekt
      *
      * @tag filter
      * @static
-     * 
+     *
      * @assert('1)@*(&UR)HQ)56W(*(HG))') === '156'
      */
 	static public function getDigits($value)
@@ -470,7 +470,7 @@ class Inspekt
      *
      * @tag filter
      * @static
-     * 
+     *
      * @assert('/usr/lib/php/Pear.php') === '/usr/lib/php'
      */
 	static public function getDir($value)
@@ -489,7 +489,7 @@ class Inspekt
      * @return int
      *
      * @tag filter
-     * 
+     *
      * @assert('1)45@*(&UR)HQ)W.0000(*(HG))') === 1
      * @assert('A1)45@*(&UR)HQ)W.0000(*(HG))') === 0
      */
@@ -522,10 +522,10 @@ class Inspekt
 	
 	/**
 	 * Returns the value encoded as ROT13 (or decoded, if already was ROT13)
-	 * 
+	 *
 	 * @param mixed $value
-	 * @return mixed 
-	 * 
+	 * @return mixed
+	 *
 	 * @link http://php.net/manual/en/function.str-rot13.php
 	 */
 	static public function getROT13($value)
@@ -534,9 +534,77 @@ class Inspekt
 			return Inspekt::_walkArray($value, 'getROT13');
 		} else {
 			return str_rot13($value);
-		}		
+		}
 	}
-	
+
+	/**
+	 * Returns the value filtering out characters not in the valid_chars
+	 * list. The valid_chars array should be array of single characters
+	 * allowed in the value. There are only 3 exceptions, which are
+	 * meant as helper "macros":
+	 *
+	 *   "a-z" : All lowercase letters
+	 *   "A-Z" : All uppercase letters
+	 *   "0-9" : All numbers
+	 *
+	 * No other multi-character values are allowed.
+	 *
+	 * @param  mixed $value       Value to filter
+	 * @param  mixed $valid_chars Array of characters not to filter
+	 * @return mixed
+	 *
+	 * @tag filter
+	 */
+	static public function getChars($value, $valid_chars)
+	{
+		if (Inspekt::isArrayOrArrayObject($value)) {
+			return Inspekt::_walkArray($value, 'getChars');
+		} else {
+			$regex_chars = array();
+			
+			// Make sure we are working with an array
+			if (!is_array($valid_chars)) {
+				trigger_error('The second parameter to getChars must be an array of valid characters', E_USER_ERROR);
+			}
+			
+			// If the array is empty, return no value
+			if (empty($valid_chars)) {
+				return '';
+			}
+			
+			// Loop over provided character list and build regular expression
+			foreach ($valid_chars as $char) {
+				// Make sure there is nothing weird in the array
+				if (is_array($char) || is_object($char) || is_resource($char)) {
+					trigger_error('Only single characters are allowed in the valid character array', E_USER_WARNING);
+				}
+				
+				// If the character isn't exactly 1 in length, it's either a valid "macro" or an error
+				if (strlen($char) != 1) {
+					// Handle "macro" values
+					switch ($char) {
+					case 'a-z':
+						$regex_chars[] = 'a-z';
+						break;
+					case 'A-Z':
+						$regex_chars[] = 'A-Z';
+						break;
+					case '0-9':
+						$regex_chars[] = '0-9';
+						break;
+					default:
+						trigger_error('Only single characters are allowed in the valid character array', E_USER_WARNING);
+					}
+				} else {
+					// Add Single Character to "Allowed" Regex List
+					$regex_chars[] = $char;
+				}
+			}
+			
+			// Apply Regex to value
+			return preg_replace('/[^' . preg_quote(implode('', $regex_chars)) . ']/', '', $value);
+		}
+	}
 
 	/**
      * Returns TRUE if every character is alphabetic or a digit,
@@ -546,7 +614,7 @@ class Inspekt
      * @return boolean
      *
      * @tag validator
-     * 
+     *
      * @assert('NCOFWIERNVOWIEBHV12047057y0650ytg0314') === true
      * @assert('NCOFWIERNVOWIEBHV2@12047057y0650ytg0314') === false
      * @assert('funkatron') === true
@@ -567,7 +635,7 @@ class Inspekt
      * @return boolean
      *
      * @tag validator
-     * 
+     *
      * @assert('NCOFWIERNVOWIEBHV12047057y0650ytg0314') === false
      * @assert('NCOFWIERNVOWIEBHV2@12047057y0650ytg0314') === false
      * @assert('funkatron') === true
@@ -592,13 +660,13 @@ class Inspekt
      * @return boolean
      *
      * @tag validator
-     * 
+     *
      * @assert(12, 0, 12) === TRUE
      * @assert(12, 0, 12, FALSE) === FALSE
      * @assert('f', 'a', 'm', FALSE) === TRUE
      * @assert('p', 'a', 'm', FALSE) === FALSE
-     * 
-     * 
+     *
+     *
      */
 	static public function isBetween($value, $min, $max, $inc = TRUE)
 	{
@@ -666,7 +734,7 @@ class Inspekt
      * @return boolean
      *
      * @tag validator
-     * 
+     *
      * @assert('2009-06-30') === TRUE
      * @assert('2009-06-31') === FALSE
      * @assert('2009-6-30') === TRUE
@@ -687,7 +755,7 @@ class Inspekt
      * @return boolean
      *
      * @tag validator
-     * 
+     *
      * @assert('1029438750192730t91740987023948') === FALSE
      * @assert('102943875019273091740987023948') === TRUE
      * @assert(102943875019273091740987023948) === FALSE
@@ -706,7 +774,7 @@ class Inspekt
      * @see ISPK_EMAIL_VALID
      *
      * @tag validator
-     * 
+     *
      * @assert('coj@poop.com') === TRUE
      * @assert('coj+booboo@poop.com') === TRUE
      * @assert('coj!booboo@poop.com') === FALSE
@@ -728,7 +796,7 @@ class Inspekt
      * @assert(10244578109.234451) === TRUE
      * @assert('10244578109.234451') === FALSE
      * @assert('10,244,578,109.234451') === FALSE
-     * 
+     *
      * @tag validator
      */
 	static public function isFloat($value)
@@ -749,7 +817,7 @@ class Inspekt
      *
      * @tag validator
      * @static
-     * 
+     *
      * @assert(5, 0) === TRUE
      * @assert(2, 10) === FALSE
      * @assert('b', 'a') === TRUE
@@ -769,10 +837,10 @@ class Inspekt
      *
      * @tag validator
      * @static
-     * 
+     *
      * @assert('6F') === TRUE
      * @assert('F6') === TRUE
-     * 
+     *
      */
 	static public function isHex($value)
 	{
@@ -856,7 +924,7 @@ class Inspekt
      *
      * @tag validator
      * @static
-     * 
+     *
      * @todo better handling of diffs b/t 32-bit and 64-bit
      */
 	static public function isInt($value)
@@ -1125,7 +1193,7 @@ class Inspekt
 
 	/**
      * Returns value with all tags removed.
-     * 
+     *
      * This will utilize the PHP Filter extension if available
      *
      * @param mixed $value
@@ -1149,14 +1217,14 @@ class Inspekt
 	
 	/**
 	 * returns value with tags stripped and the chars '"&<> and all ascii chars under 32 encoded as html entities
-	 * 
+	 *
 	 * This will utilize the PHP Filter extension if available
-	 * 
+	 *
 	 * @param mixed $value
 	 * @return @mixed
-	 * 
+	 *
 	 * @tag filter
-	 * 
+	 *
 	 */
 	static public function noTagsOrSpecial($value)
 	{
@@ -1175,7 +1243,7 @@ class Inspekt
 					convert low ascii chars to entities
 				*/
 				$newval = str_split($newval);
-				for ($i=0; $i < count($newval); $i++) { 
+				for ($i=0; $i < count($newval); $i++) {
 					$ascii_code = ord($newval[$i]);
 					if ($ascii_code < 32) {
 						$newval[$i] = "&#{$ascii_code};";
@@ -1209,13 +1277,13 @@ class Inspekt
 	
 	/**
 	 * Escapes the value given with mysql_real_escape_string
-	 * 
+	 *
 	 * @param mixed $value
 	 * @param resource $conn the mysql connection. If none is given, it will use the last link opened, per behavior of mysql_real_escape_string
 	 * @return mixed
-	 * 
+	 *
 	 * @link http://php.net/manual/en/function.mysql-real-escape-string.php
-	 * 
+	 *
 	 * @tag filter
 	 */
 	static public function escMySQL($value, $conn=null) {
@@ -1237,13 +1305,13 @@ class Inspekt
 
 	/**
 	 * Escapes the value given with pg_escape_string
-	 * 
+	 *
 	 * If the data is for a column of the type bytea, use Inspekt::escPgSQLBytea()
-	 * 
+	 *
 	 * @param mixed $value
 	 * @param resource $conn the postgresql connection. If none is given, it will use the last link opened, per behavior of pg_escape_string
 	 * @return mixed
-	 * 
+	 *
 	 * @link http://php.net/manual/en/function.pg-escape-string.php
 	 */
 	static public function escPgSQL($value, $conn=null) {
@@ -1265,11 +1333,11 @@ class Inspekt
 
 	/**
 	 * Escapes the value given with pg_escape_bytea
-	 * 
+	 *
 	 * @param mixed $value
 	 * @param resource $conn the postgresql connection. If none is given, it will use the last link opened, per behavior of pg_escape_bytea
 	 * @return mixed
-	 * 
+	 *
 	 * @link http://php.net/manual/en/function.pg-escape-bytea.php
 	 */
 	static public function escPgSQLBytea($value, $conn=null) {
@@ -1280,7 +1348,7 @@ class Inspekt
 			return Inspekt::_walkArray($value, 'escPgSQL');
 		} else {
 			if (isset($connection)) {
-				return pg_escape_bytea($connection, $value); 
+				return pg_escape_bytea($connection, $value);
 			} else {
 				return pg_escape_bytea($value);
 			}
