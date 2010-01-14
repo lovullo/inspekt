@@ -503,6 +503,23 @@ class Inspekt
 	}
 
 	/**
+	 * Returns (float) value
+	 *
+	 * @param mixed $value
+	 * @return float
+	 *
+	 * @tag filter
+	 */
+	static public function getFloat($value)
+	{
+		if (Inspekt::isArrayOrArrayObject($value)) {
+			return Inspekt::_walkArray($value, 'getFloat');
+		} else {
+			return (float) $value;
+		}
+	}
+
+	/**
      * Returns realpath(value).
      *
      * @param mixed $value

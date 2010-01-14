@@ -396,6 +396,21 @@ class Inspekt_Cage implements IteratorAggregate, ArrayAccess, Countable {
 	}
 
 	/**
+	 * Returns (float) value.
+	 *
+	 * @param mixed $key
+	 * @return float
+	 *
+	 * @tag filter
+	 */
+	public function getFloat($key) {
+		if (!$this->keyExists($key)) {
+			return false;
+		}
+		return Inspekt::getFloat($this->_getValue($key));
+	}
+
+	/**
 	 * Returns realpath(value).
 	 *
 	 * @param mixed $key

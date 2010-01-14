@@ -162,6 +162,32 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * Test cases for Inspekt::getFloat()
+	 */
+	public function getFloatProvider()
+	{
+		return array(
+			array('200.200'                      , 200.2),
+			array('123.456'                      , 123.456),
+			array(30.00                          , 30.00),
+			array(1.2e3                          , 1.2e3),
+			array(7E-10                          , 7E-10),
+			array('1.2e3'                        , 1.2e3),
+			array('7E-10'                        , 7E-10),
+			array('A1)45@*(&UR)HQ)W.0000(*(HG))' , 0.0),
+			array('1)45@*(&UR)HQ)W.0000(*(HG))'  , 1.0),
+		);
+	}
+
+	/**
+	 * @dataProvider getFloatProvider
+	 */
+	public function testGetFloat($input, $expected)
+	{
+		$this->assertSame($expected, Inspekt::getFloat($input));
+	}
+
+	/**
 	 * Generated from @assert ('NCOFWIERNVOWIEBHV12047057y0650ytg0314') === true.
 	 */
 	public function testIsAlnum()
