@@ -878,19 +878,19 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	{
 		$this->assertSame(
 			array(
-				'bunny!',
-				'OiNk681',
-				't0talf41l',
-				'moo[test^]',
-				'((Oi_Nk\\',
+				'bunny',
+				'ik',
+				'ttalfl',
+				'mootest^',
+				'i_k',
 			),
 			Inspekt::getChars(
 				array(
-					'bunny',
-					'ik',
-					'ttalf1l',
-					'mootest^',
-					'i_k',
+					'bunny!',
+					'OiNk681',
+					't0talf41l',
+					'moo[test^]',
+					'((Oi_Nk\\',
 				),
 				array('a-z', '_', '-', '^')
 			)
