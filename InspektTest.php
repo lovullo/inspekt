@@ -198,6 +198,10 @@ class InspektTest extends PHPUnit_Framework_TestCase
 				1.2e3,
 				7E-10,
 				0.0,
+				array(
+					10.0,
+					0.0,
+				),
 				1.0,
 				),
 			Inspekt::getFloat(
@@ -206,6 +210,10 @@ class InspektTest extends PHPUnit_Framework_TestCase
 					'1.2e3',
 					7E-10,
 					'A1)45@*(&UR)HQ)W.0000(*(HG))',
+					array(
+						'10,000.56',
+						'$15,124.99',
+					),
 					'1)45@*(&UR)HQ)W.0000(*(HG))',
 				)
 			)
@@ -883,6 +891,10 @@ class InspektTest extends PHPUnit_Framework_TestCase
 				'ttalfl',
 				'mootest^',
 				'i_k',
+				array(
+					'fu-yu_^^',
+					'',
+				),
 			),
 			Inspekt::getChars(
 				array(
@@ -891,6 +903,10 @@ class InspektTest extends PHPUnit_Framework_TestCase
 					't0talf41l',
 					'moo[test^]',
 					'((Oi_Nk\\',
+					array(
+						'fuNK4-y0u_^^',
+						'12345',
+					),
 				),
 				array('a-z', '_', '-', '^')
 			)
