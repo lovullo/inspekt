@@ -188,6 +188,31 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 *
+	 */
+	public function testGetFloatArray()
+	{
+		$this->assertSame(
+			array(
+				200.2,
+				1.2e3,
+				7E-10,
+				0.0,
+				1.0,
+				),
+			Inspekt::getFloat(
+				array(
+					'200.200',
+					'1.2e3',
+					7E-10,
+					'A1)45@*(&UR)HQ)W.0000(*(HG))',
+					'1)45@*(&UR)HQ)W.0000(*(HG))',
+				)
+			)
+		);
+	}
+
+	/**
 	 * Generated from @assert ('NCOFWIERNVOWIEBHV12047057y0650ytg0314') === true.
 	 */
 	public function testIsAlnum()
