@@ -866,9 +866,35 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	/**
 	 * @dataProvider getCharsProvider
 	 */
-	public function testGetCharListValidList($input, $valid_chars, $output)
+	public function testGetCharListData($input, $valid_chars, $output)
 	{
 		$this->assertSame($output, Inspekt::getChars($input, $valid_chars));
+	}
+
+	/**
+	 *
+	 */
+	public function testGetCharListDataArray()
+	{
+		$this->assertSame(
+			array(
+				'bunny!',
+				'OiNk681',
+				't0talf41l',
+				'moo[test^]',
+				'((Oi_Nk\\',
+			),
+			Inspekt::getChars(
+				array(
+					'bunny',
+					'ik',
+					'ttalf1l',
+					'mootest^',
+					'i_k',
+				),
+				array('a-z', '_', '-', '^')
+			)
+		);
 	}
 
 	/**
