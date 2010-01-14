@@ -567,7 +567,7 @@ class Inspekt
 	 * No other multi-character values are allowed.
 	 *
 	 * @param  mixed $value       Value to filter
-	 * @param  mixed $valid_chars Array of characters not to filter
+	 * @param  array $valid_chars Array of characters not to filter
 	 * @return mixed
 	 *
 	 * @tag filter

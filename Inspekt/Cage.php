@@ -439,7 +439,31 @@ class Inspekt_Cage implements IteratorAggregate, ArrayAccess, Countable {
 		}
 		return Inspekt::getROT13($this->_getValue($key));
 	}
-	
+
+	/**
+	 * Returns the value filtering out characters not in the valid_chars
+	 * list. The valid_chars array should be array of single characters
+	 * allowed in the value. There are only 3 exceptions, which are
+	 * meant as helper "macros":
+	 *
+	 *   "a-z" : All lowercase letters
+	 *   "A-Z" : All uppercase letters
+	 *   "0-9" : All numbers
+	 *
+	 * No other multi-character values are allowed.
+	 *
+	 * @param  string $value       Cage key to filter
+	 * @param  array  $valid_chars Array of characters not to filter
+	 * @return mixed
+	 *
+	 * @tag filter
+	 */
+	public function getChars($key, $valid_chars) {
+		if (!$this->keyExists($key)) {
+			return false;
+		}
+		return Inspekt::getChars($this->_getValue($key), $valid_chars);
+	}
 
 	/**
 	 * This returns the value of the given key passed through the HTMLPurifer
