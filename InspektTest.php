@@ -42,8 +42,25 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	public function testGetAlnum()
 	{
 		$this->assertSame(
-		  '1URHQWHG',
-		  Inspekt::getAlnum('1)@*(&UR)HQ)W(*(HG))')
+			'1URHQWHG',
+			Inspekt::getAlnum('1)@*(&UR)HQ)W(*(HG))')
+		);
+	}
+
+	/**
+	 *
+	 */
+	public function testGetAlnumArray()
+	{
+		$this->assertSame(
+			array(
+				'1URHQWHG',
+				'nSsdW3V0',
+			),
+			Inspekt::getAlnum(array(
+				'1)@*(&UR)HQ)W(*(HG))',
+				'n)@##S!!s>d<W.3,/V=0',
+			))
 		);
 	}
 
@@ -59,6 +76,23 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 *
+	 */
+	public function testGetDigitsArray()
+	{
+		$this->assertSame(
+			array(
+				'156',
+				'51947399',
+			),
+			Inspekt::getDigits(array(
+				'1)@*(&UR)HQ)56W(*(HG))',
+				'abc5def1,.><9///4##@7afg=3=+9-_9',
+			))
+		);
+	}
+
+	/**
 	 * Generated from @assert ('/usr/lib/php/Pear.php') === '/usr/lib/php'.
 	 */
 	public function testGetDir()
@@ -66,6 +100,23 @@ class InspektTest extends PHPUnit_Framework_TestCase
 		$this->assertSame(
 		  '/usr/lib/php',
 		  Inspekt::getDir('/usr/lib/php/Pear.php')
+		);
+	}
+
+	/**
+	 *
+	 */
+	public function testGetDirArray()
+	{
+		$this->assertSame(
+			array(
+				'/usr/lib/php',
+				'C:\WINDOWS\system32\drivers\etc',
+			),
+			Inspekt::getDir(array(
+				'/usr/lib/php/Pear.php',
+				'C:\WINDOWS\system32\drivers\etc\hosts',
+			))
 		);
 	}
 
@@ -88,6 +139,25 @@ class InspektTest extends PHPUnit_Framework_TestCase
 		$this->assertSame(
 		  0,
 		  Inspekt::getInt('A1)45@*(&UR)HQ)W.0000(*(HG))')
+		);
+	}
+
+	/**
+	 * Generated from @assert ('A1)45@*(&UR)HQ)W.0000(*(HG))') === 0.
+	 */
+	public function testGetIntArray()
+	{
+		$this->assertSame(
+			array(
+				0,
+				1
+			),
+			Inspekt::getInt(
+				array(
+					'A1)45@*(&UR)HQ)W.0000(*(HG))',
+					'1)45@*(&UR)HQ)W.0000(*(HG))'
+				)
+			)
 		);
 	}
 
@@ -510,7 +580,7 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public function testMakeServerCage()
 	{
@@ -519,7 +589,7 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public function testMakeGetCage()
 	{
@@ -528,7 +598,7 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public function testMakePostCage()
 	{
@@ -537,7 +607,7 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public function testMakeCookieCage()
 	{
@@ -546,7 +616,7 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public function testMakeEnvCage()
 	{
@@ -555,7 +625,7 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public function testMakeFilesCage()
 	{
@@ -565,14 +635,15 @@ class InspektTest extends PHPUnit_Framework_TestCase
 
 	/**
 	 * session cages currently aren't supported
+	 * @expectedException PHPUnit_Framework_Error
 	 */
 	public function testMakeSessionCage()
 	{
-		
+		Inspekt::makeSessionCage();
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public function testMakeSuperCage()
 	{
@@ -581,7 +652,7 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public function testUseFilterExt()
 	{
@@ -592,7 +663,7 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public function testConvertArrayToArrayObject()
 	{
@@ -602,38 +673,67 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public function testGetAlpha()
 	{
 		$input  = '0qhf01 *#R& !)*h09hqwe0fH! )efh0hf';
 		$output = 'qhfRhhqwefHefhhf';
 		$this->assertTrue(Inspekt::getAlpha($input) === $output);
-
+		
 		$input  = array('1241DOSLDH', 'efoihr123-', 'eoeijfo1');
 		$output = array('DOSLDH', 'efoihr', 'eoeijfo');
 		$this->assertEquals(Inspekt::getAlpha($input), $output);
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public function testGetPath()
 	{
 		$expected  = dirname(__FILE__);
 		$this->assertTrue(Inspekt::getPath('./') == $expected);
-
+		
 		$expected = dirname(dirname(dirname(__FILE__)));
 		$this->assertTrue(Inspekt::getPath('./../../') == $expected);
 	}
 
 	/**
-	 * 
+	 *
+	 */
+	public function testGetPathArray()
+	{
+		$this->assertSame(
+			array(
+				dirname(__FILE__),
+				dirname(dirname(dirname(__FILE__))),
+			),
+			Inspekt::getPath(
+				array(
+					'./',
+					'./../../'
+				)
+			)
+		);
+	}
+
+	/**
+	 *
 	 */
 	public function testGetROT13()
 	{
 		$input = 'I am not an animal!';
 		$expect= 'V nz abg na navzny!';
+		$this->assertSame($expect, Inspekt::getROT13($input));
+	}
+
+	/**
+	 *
+	 */
+	public function testGetROT13Array()
+	{
+		$input = array('I am not an animal!');
+		$expect= array('V nz abg na navzny!');
 		$this->assertSame($expect, Inspekt::getROT13($input));
 	}
 
@@ -647,7 +747,25 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * 
+	 * @expectedException PHPUnit_Framework_Error
+	 */
+	public function testIsCcnumUnsupportedOption()
+	{
+		$input = '5105105105105100';
+		Inspekt::isCcnum($input, "moo");
+	}
+
+	/**
+	 *
+	 */
+	public function testIsCcnumBadLength()
+	{
+		$input = '1234';
+		$this->assertFalse(Inspekt::isCcnum($input));
+	}
+
+	/**
+	 *
 	 */
 	public function testIsHostname()
 	{
@@ -656,15 +774,104 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * 
+	 * @expectedException PHPUnit_Framework_Error
+	 */
+	public function testIsHostnameBadParamAllowType()
+	{
+		Inspekt::isHostname("ignored", "oink");
+	}
+
+	/**
+	 * @expectedException PHPUnit_Framework_Error
+	 */
+	public function testIsHostnameBadParamAllowValue()
+	{
+		Inspekt::isHostname("ignored", 8);
+	}
+
+	/**
+	 *
+	 */
+	public function testIsHostnameIPAllowed()
+	{
+		$this->assertTrue(Inspekt::isHostname("127.0.0.1", ISPK_HOST_ALLOW_IP));
+	}
+
+	/**
+	 *
+	 */
+	public function testIsHostnameIPButNotAllowed()
+	{
+		$this->assertFalse(Inspekt::isHostname("127.0.0.1", ISPK_HOST_ALLOW_DNS));
+	}
+
+	/**
+	 *
+	 */
+	public function testIsHostnameIPBad()
+	{
+		$this->assertFalse(Inspekt::isHostname("999.999", ISPK_HOST_ALLOW_IP));
+	}
+
+	/**
+	 *
+	 */
+	public function testIsHostnameDomainNameAllowed()
+	{
+		$this->assertTrue(Inspekt::isHostname("www.google.com", ISPK_HOST_ALLOW_DNS));
+	}
+
+	/**
+	 *
+	 */
+	public function testIsHostnameDomainNameButNotAllowed()
+	{
+		$this->assertFalse(Inspekt::isHostname("www.google.com", ISPK_HOST_ALLOW_IP));
+	}
+
+	/**
+	 *
+	 */
+	public function testIsHostnameDomainNameBad()
+	{
+		$this->assertFalse(Inspekt::isHostname("google", ISPK_HOST_ALLOW_DNS));
+	}
+
+	/**
+	 *
+	 */
+	public function testIsHostnameLocalNameAllowed()
+	{
+		$this->assertTrue(Inspekt::isHostname("bunny", ISPK_HOST_ALLOW_LOCAL));
+	}
+
+	/**
+	 *
+	 */
+	public function testIsHostnameLocalNameButNotAllowed()
+	{
+		$this->assertFalse(Inspekt::isHostname("bunny", ISPK_HOST_ALLOW_IP));
+	}
+
+	/**
+	 *
+	 */
+	public function testIsHostnameLocalNameBad()
+	{
+		$this->assertFalse(Inspekt::isHostname("bunny099", ISPK_HOST_ALLOW_IP));
+	}
+
+	/**
+	 *
 	 */
 	public function testIsInt()
 	{
 		$input = '9223372036854775807';
 		$this->assertTrue(Inspekt::isInt($input));
 	}
+
 	/**
-	 * 
+	 *
 	 */
 	public function testIsInt1()
 	{
@@ -672,7 +879,7 @@ class InspektTest extends PHPUnit_Framework_TestCase
 		$this->assertTrue(Inspekt::isInt($input));
 	}
 	/**
-	 * 
+	 *
 	 */
 	public function testIsInt2()
 	{
@@ -680,7 +887,7 @@ class InspektTest extends PHPUnit_Framework_TestCase
 		$this->assertFalse(Inspekt::isInt($input));
 	}
 	/**
-	 * 
+	 *
 	 */
 	public function testIsInt3()
 	{
@@ -688,7 +895,7 @@ class InspektTest extends PHPUnit_Framework_TestCase
 		$this->assertTrue(Inspekt::isInt($input));
 	}
 	/**
-	 * 
+	 *
 	 */
 	public function testIsInt4()
 	{
@@ -697,7 +904,7 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public function testIsIp()
 	{
@@ -706,7 +913,7 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public function testIsLessThan()
 	{
@@ -714,7 +921,7 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public function testIsOneOf()
 	{
@@ -724,12 +931,39 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public function testIsPhone()
 	{
 		$input = '7655559090';
 		$this->assertTrue(Inspekt::isPhone($input));
+	}
+
+	/**
+	 *
+	 */
+	public function testIsPhoneBadInputType()
+	{
+		$input = 'bunny01';
+		$this->assertFalse(Inspekt::isPhone($input));
+	}
+
+	/**
+	 *
+	 */
+	public function testIsPhoneBadInputLength()
+	{
+		$input = '1234';
+		$this->assertFalse(Inspekt::isPhone($input));
+	}
+
+	/**
+	 * @expectedException PHPUnit_Framework_Error
+	 */
+	public function testIsPhoneUnsupportedCountryCode()
+	{
+		$input = '1234567890';
+		Inspekt::isPhone($input, 'SB');
 	}
 
 	/**
@@ -743,105 +977,61 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * 
+	 * Dataprovider for Inspekt::isUri() Testing
 	 */
-	public function testIsUri()
+	public function isUriProvider()
 	{
-		$input = '//lessthan';
-		$this->assertFalse(Inspekt::isUri($input));
-	}
-	/**
-	 * 
-	 */
-	public function testIsUri1()
-	{
-		$input = 'ftp://funky7:boooboo@123.444.999.12/';
-		$this->assertTrue(Inspekt::isUri($input));
-	}
-	/**
-	 * 
-	 */
-	public function testIsUri2()
-	{
-		$input = 'http://spinaltap.micro.umn.edu/00/Weather/California/Los%lngeles';
-		$this->assertFalse(Inspekt::isUri($input));
-	}
-	/**
-	 * 
-	 */
-	public function testIsUri3()
-	{
-		$input = 'http://funkatron.com/////////12341241';
-		$this->assertTrue(Inspekt::isUri($input));
-	}
-	/**
-	 * 
-	 */
-	public function testIsUri4()
-	{
-		$input = 'http://funkatron.com:12';
-		$this->assertTrue(Inspekt::isUri($input));
-	}
-	/**
-	 * 
-	 */
-	public function testIsUri5()
-	{
-		$input = 'http://funkatron.com:8000/#foo';
-		$this->assertTrue(Inspekt::isUri($input));
-	}
-	/**
-	 * 
-	 */
-	public function testIsUri6()
-	{
-		$input = 'https://funkatron.com';
-		$this->assertTrue(Inspekt::isUri($input));
-	}
-	/**
-	 * 
-	 */
-	public function testIsUri7()
-	{
-		$input = 'https://funkatron.com:42/funky.php?foo[]=bar';
-		$this->assertTrue(Inspekt::isUri($input));
-	}
-	/**
-	 * 
-	 */
-	public function testIsUri8()
-	{
-		$input = 'http://www.w3.org/2001/XMLSchema';
-		$this->assertTrue(Inspekt::isUri($input));
+		return array(
+			array(false, '//lessthan'),
+			array(true,  'ftp://funky7:boooboo@123.444.999.12/'),
+			array(false, 'http://spinaltap.micro.umn.edu/00/Weather/California/Los%lngeles'),
+			array(true,  'http://funkatron.com/////////12341241'),
+			array(true,  'http://funkatron.com:12'),
+			array(true,  'http://funkatron.com:8000/#foo'),
+			array(true,  'https://funkatron.com'),
+			array(true,  'https://funkatron.com:42/funky.php?foo[]=bar'),
+			array(true,  'http://www.w3.org/2001/XMLSchema'),
+			array(true,  'http://news.bbc.co.uk/2/hi/middle_east/8277040.stm'),
+			array(true,  'http://www.google.com/?url=http://www.google.com&confuse=false'),
+			array(true,  'http://user:pass@domain.com:8080/some/path/stuff.php?var=1&moo=oink#anchor1'),
+		);
 	}
 
 	/**
-	 * 
+	 * @dataProvider isUriProvider
 	 */
-	public function testIsUri9()
+	public function testIsUri($expected, $uri)
 	{
-		$input = 'http://news.bbc.co.uk/2/hi/middle_east/8277040.stm';
-		$this->assertTrue(Inspekt::isUri($input));
+		if ($expected === true)
+		{
+			$this->assertTrue(Inspekt::isUri($uri));
+		}
+		else
+		{
+			$this->assertFalse(Inspekt::isUri($uri));
+		}
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public function testIsZip()
 	{
 		$input = '00202';
 		$this->assertTrue(Inspekt::isZip($input));
 	}
+
 	/**
-	 * 
+	 *
 	 */
 	public function testIsZip1()
 	{
 		$input = 'C6D-5F5';
 		$this->assertFalse(Inspekt::isZip($input));
 	}
+
 	/**
-	 * 
+	 *
 	 */
 	public function testIsZip2()
 	{
@@ -850,12 +1040,22 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public function testNoTags()
 	{
 		$input = '<SCRIPT>alert(\'foobar\');</SCRIPT>';
 		$expect= 'alert(\'foobar\');';
+		$this->assertSame($expect, Inspekt::noTags($input));
+	}
+
+	/**
+	 *
+	 */
+	public function testNoTagsArray()
+	{
+		$input = array('<SCRIPT>alert(\'foobar\');</SCRIPT>');
+		$expect= array('alert(\'foobar\');');
 		$this->assertSame($expect, Inspekt::noTags($input));
 	}
 
@@ -870,7 +1070,17 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * 
+	 * What might look like blank spaces below are mostly low ASCII chars
+	 */
+	public function testNoTagsOrSpecialArray()
+	{
+		$input  = array('    <SCRIPT<strong>>alert(\'foobar\');<</strong>/SCRIPT>');
+		$expect = array('&#21;&#21;&#21;&#21;&#21;&#21;&#22; &#22; &#22; &#22; alert(&#039;foobar&#039;);');
+		$this->assertSame($expect, Inspekt::noTagsOrSpecial($input));
+	}
+
+	/**
+	 *
 	 */
 	public function testNoPath()
 	{
@@ -880,10 +1090,26 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 *
+	 */
+	public function testNoPathArray()
+	{
+		$input = array('./../../../../../../../../../etc/passwd');
+		$expect= array('passwd');
+		$this->assertSame($expect, Inspekt::noPath($input));
+	}
+
+	/**
 	 * @todo Implement testEscMySQL().
 	 */
 	public function testEscMySQL()
 	{
+		if (!extension_loaded('mysql')) {
+			$this->markTestSkipped(
+			  'The MySQL extension is not available.'
+			);
+		}
+		
 		// Remove the following lines when you implement this test.
 		$this->markTestIncomplete(
 		  'This test has not been implemented yet.'
@@ -896,10 +1122,15 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	public function testEscPgSQL()
 	{
 		if (!extension_loaded('pgsql')) {
-            $this->markTestSkipped(
-              'The PGSQL extension is not available.'
-            );
-        }
+			$this->markTestSkipped(
+			  'The PGSQL extension is not available.'
+			);
+		}
+		
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+		  'This test has not been implemented yet.'
+		);
 	}
 
 	/**
@@ -908,10 +1139,15 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	public function testEscPgSQLBytea()
 	{
 		if (!extension_loaded('pgsql')) {
-            $this->markTestSkipped(
-              'The PGSQL extension is not available.'
-            );
-        }
+			$this->markTestSkipped(
+			  'The PGSQL extension is not available.'
+			);
+		}
+		
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+		  'This test has not been implemented yet.'
+		);
 	}
 }
 ?>
