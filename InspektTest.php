@@ -162,6 +162,65 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * Test cases for Inspekt::getFloat()
+	 */
+	public function getFloatProvider()
+	{
+		return array(
+			array('200.200'                      , 200.2),
+			array('123.456'                      , 123.456),
+			array(30.00                          , 30.00),
+			array(1.2e3                          , 1.2e3),
+			array(7E-10                          , 7E-10),
+			array('1.2e3'                        , 1.2e3),
+			array('7E-10'                        , 7E-10),
+			array('A1)45@*(&UR)HQ)W.0000(*(HG))' , 0.0),
+			array('1)45@*(&UR)HQ)W.0000(*(HG))'  , 1.0),
+		);
+	}
+
+	/**
+	 * @dataProvider getFloatProvider
+	 */
+	public function testGetFloat($input, $expected)
+	{
+		$this->assertSame($expected, Inspekt::getFloat($input));
+	}
+
+	/**
+	 *
+	 */
+	public function testGetFloatArray()
+	{
+		$this->assertSame(
+			array(
+				200.2,
+				1.2e3,
+				7E-10,
+				0.0,
+				array(
+					10.0,
+					0.0,
+				),
+				1.0,
+				),
+			Inspekt::getFloat(
+				array(
+					'200.200',
+					'1.2e3',
+					7E-10,
+					'A1)45@*(&UR)HQ)W.0000(*(HG))',
+					array(
+						'10,000.56',
+						'$15,124.99',
+					),
+					'1)45@*(&UR)HQ)W.0000(*(HG))',
+				)
+			)
+		);
+	}
+
+	/**
 	 * Generated from @assert ('NCOFWIERNVOWIEBHV12047057y0650ytg0314') === true.
 	 */
 	public function testIsAlnum()
@@ -735,6 +794,123 @@ class InspektTest extends PHPUnit_Framework_TestCase
 		$input = array('I am not an animal!');
 		$expect= array('V nz abg na navzny!');
 		$this->assertSame($expect, Inspekt::getROT13($input));
+	}
+
+	/**
+	 * @expectedException PHPUnit_Framework_Error
+	 */
+	public function testGetCharListMissingSecondParam()
+	{
+		Inspekt::getChars('MyInput!');
+	}
+
+	/**
+	 * @expectedException PHPUnit_Framework_Error
+	 */
+	public function testGetCharListInvalidSecondParam()
+	{
+		Inspekt::getChars('MyInput!', 'This Should be an Array!');
+	}
+
+	/**
+	 * @expectedException PHPUnit_Framework_Error
+	 */
+	public function testGetCharListInvalidSecondParamValueMacro()
+	{
+		Inspekt::getChars('MyInput!', array('a-z', 'bad', '_', '@'));
+	}
+
+	/**
+	 * @expectedException PHPUnit_Framework_Error
+	 */
+	public function testGetCharListInvalidSecondParamValueArray()
+	{
+		Inspekt::getChars('MyInput!', array('a-z', array('b', 'a', 'd'), '_', '@'));
+	}
+
+	/**
+	 *
+	 */
+	public function testGetCharListEmpty()
+	{
+		$this->assertSame('', Inspekt::getChars('', array()));
+	}
+
+	/**
+	 *
+	 */
+	public function testGetCharListEmptyArray()
+	{
+		$this->assertSame(
+			array('', ''),
+			Inspekt::getChars(array('', ''), array())
+		);
+	}
+
+	/**
+	 * Dataprovider for testGetCharListValidList test
+	 */
+	public function getCharsProvider()
+	{
+		return array(
+			array('bunny!',      array('a-z', '!'),                'bunny!'),
+			array('OiNk681',     array('0-9', 'A-Z', 'a-z'),       'OiNk681'),
+			array('bunny!',      array('A-Z', '!'),                '!'),
+			array('user_name',   array('a-z', 'A-Z', '_'),         'user_name'),
+			array('t0talf41l',   array('A-Z', '@', '.'),           ''),
+			array('moo@you',     array('a-z', 'm', 'o', 'u', '@'), 'moo@you'),
+			array('some/stuff',  array('t', 's', 'u', '/'),        's/stu'),
+			array('1234567890',  array('0-9', '9', '1', '0'),      '1234567890'),
+			array('12345678-',   array('0', '-', '9'),             '-'),
+			array('nothing',     array('a', '-', 'z'),             ''),
+			array('moo[test^]',  array('o', 'e', '[', '^'),        'oo[e^'),
+			array('((OiNk\\',    array('(', 'i', '\\'),            '((i\\'),
+			array('some stuf|f', array(' ', 's', '|', 't', 'm'),   'sm st|'),
+			array('test-toast',  array('-', '-', '-'),             '-'),
+			array('test-toast',  array('-'),                       '-'),
+		);
+	}
+
+	/**
+	 * @dataProvider getCharsProvider
+	 */
+	public function testGetCharListData($input, $valid_chars, $output)
+	{
+		$this->assertSame($output, Inspekt::getChars($input, $valid_chars));
+	}
+
+	/**
+	 *
+	 */
+	public function testGetCharListDataArray()
+	{
+		$this->assertSame(
+			array(
+				'bunny',
+				'ik',
+				'ttalfl',
+				'mootest^',
+				'i_k',
+				array(
+					'fu-yu_^^',
+					'',
+				),
+			),
+			Inspekt::getChars(
+				array(
+					'bunny!',
+					'OiNk681',
+					't0talf41l',
+					'moo[test^]',
+					'((Oi_Nk\\',
+					array(
+						'fuNK4-y0u_^^',
+						'12345',
+					),
+				),
+				array('a-z', '_', '-', '^')
+			)
+		);
 	}
 
 	/**
