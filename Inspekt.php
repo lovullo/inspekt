@@ -324,35 +324,40 @@ class Inspekt
 	 * outside of the class
 	 *
 	 *
-	 * @param array|ArrayObject $input
-	 * @param string $inspektor  The name of a static filtering method, like get* or no*
+	 * @param array|ArrayObject $input    Array to process
+	 * @param callback          $callback Filtering function to call
+	 * @param mixed             $userdata (Optional) If provided, will be passed as the second parameter to callback
 	 * @return array
 	 *
 	 */
-	static protected function _walkArray($input, $method, $classname=NULL) {
-				
-		if (!isset($classname)) {
-			$classname = __CLASS__;
+	static protected function _walkArray($input, $callback, $userdata = "")
+	{
+		// If Callback is a function name, create proper callback array
+		if (!is_array($callback)) {
+			$callback = array(__CLASS__, $callback);
 		}
-				
-		if (!self::isArrayObject($input) && !is_array($input) ) {
-			user_error('$input must be an array or ArrayObject', E_USER_ERROR);
-			return FALSE;
+		
+		// Input should be an array
+		if (!self::isArrayObject($input) && !is_array($input)) {
+			trigger_error('$input must be an array or ArrayObject', E_USER_ERROR);
+			return false;
 		}
-
-		if ( !is_callable( array($classname, $method) ) ) {
-			user_error('Inspektor '.$classname.'::'.$method.' is invalid', E_USER_ERROR);
-			return FALSE;
+		
+		// Callback should be valid
+		if (!is_callable($callback)) {
+			user_error('Inspekt callback ' . $callback[0] . '::' . $callback[1] . ' is invalid', E_USER_ERROR);
+			return false;
 		}
-
-		foreach($input as $key=>$val) {
+		
+		foreach ($input as $key => $val) {
 			if (is_array($val)) {
-				$input[$key]=self::_walkArray($val, $method, $classname);
+				$input[$key] = self::_walkArray($val, $callback, $userdata);
 			} else {
-				$val = call_user_func( array($classname, $method), $val);
-				$input[$key]=$val;
+				$val = call_user_func($callback, $val, $userdata);
+				$input[$key] = $val;
 			}
 		}
+		
 		return $input;
 	}
 
@@ -575,13 +580,14 @@ class Inspekt
 	static public function getChars($value, $valid_chars)
 	{
 		if (Inspekt::isArrayOrArrayObject($value)) {
-			return Inspekt::_walkArray($value, 'getChars');
+			return Inspekt::_walkArray($value, 'getChars', $valid_chars);
 		} else {
 			$regex_chars = "";
 			
 			// Make sure we are working with an array
 			if (!is_array($valid_chars)) {
 				trigger_error('The second parameter to getChars must be an array of valid characters', E_USER_ERROR);
+				return false;
 			}
 			
 			// If the array is empty, return no value
@@ -594,6 +600,7 @@ class Inspekt
 				// Make sure there is nothing weird in the array
 				if (is_array($char) || is_object($char) || is_resource($char)) {
 					trigger_error('Only single characters are allowed in the valid character array', E_USER_WARNING);
+					return false;
 				}
 				
 				// If the character isn't exactly 1 in length, it's either a valid "macro" or an error
@@ -611,6 +618,7 @@ class Inspekt
 						break;
 					default:
 						trigger_error('Only single characters are allowed in the valid character array', E_USER_WARNING);
+						return false;
 					}
 				} else {
 					if ($char == "-") {
