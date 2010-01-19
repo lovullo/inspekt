@@ -1,6 +1,6 @@
 <?php
 /**
- * This is the abstract for user-defined Accessor methods. Accessors are used to 
+ * This is the abstract for user-defined Accessor methods. Accessors are used to
  * retrieve values from a cage object. By extending this abstract, developers
  * can add their own accessor methods. Typically the only method they will need
  * to define is AccessorAbstract::inspekt(), which takes a value, examines it,
@@ -21,7 +21,7 @@ abstract class AccessorAbstract {
 	/**
 	 * constructor
 	 *
-	 * @param Inspekt_Cage $cage 
+	 * @param Inspekt_Cage $cage
 	 * @param array $args optional
 	 * @author Ed Finkler
 	 */
@@ -34,7 +34,7 @@ abstract class AccessorAbstract {
 	 * This executes the accessor on the key, either passed as the only argument,
 	 * or the first value in $this->args;
 	 *
-	 * @param string $key 
+	 * @param string $key
 	 * @return mixed
 	 * @author Ed Finkler
 	 */
@@ -57,7 +57,7 @@ abstract class AccessorAbstract {
 	/**
 	 * Retrieves a value from the cage
 	 *
-	 * @param string $key 
+	 * @param string $key
 	 * @return mixed
 	 * @author Ed Finkler
 	 */
@@ -70,7 +70,7 @@ abstract class AccessorAbstract {
 	 * recursively, applying $this->inspekt on any non-array values
 	 *
 	 * @param mixed $input
-	 * @param 
+	 * @param
 	 * @author Ed Finkler
 	 */
 	protected function walkArray($input) {
@@ -79,7 +79,7 @@ abstract class AccessorAbstract {
 		}
 				
 		if (!Inspekt::isArrayOrArrayObject($input)) {
-			user_error('$input must be an array or ArrayObject', E_USER_ERROR);
+			trigger_error('$input must be an array or ArrayObject', E_USER_ERROR);
 			return FALSE;
 		}
 

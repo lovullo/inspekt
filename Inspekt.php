@@ -345,7 +345,7 @@ class Inspekt
 		
 		// Callback should be valid
 		if (!is_callable($callback)) {
-			user_error('Inspekt callback ' . $callback[0] . '::' . $callback[1] . ' is invalid', E_USER_ERROR);
+			trigger_error('Inspekt callback ' . $callback[0] . '::' . $callback[1] . ' is invalid', E_USER_ERROR);
 			return false;
 		}
 		
@@ -899,11 +899,11 @@ class Inspekt
 	static public function isHostname($value, $allow = ISPK_HOST_ALLOW_ALL)
 	{
 		if (!is_numeric($allow) || !is_int($allow)) {
-			user_error('Illegal value for $allow; expected an integer', E_USER_WARNING);
+			trigger_error('Illegal value for $allow; expected an integer', E_USER_WARNING);
 		}
 
 		if ($allow < ISPK_HOST_ALLOW_DNS || ISPK_HOST_ALLOW_ALL < $allow) {
-			user_error('Illegal value for $allow; expected integer between ' . ISPK_HOST_ALLOW_DNS . ' and ' . ISPK_HOST_ALLOW_ALL, E_USER_WARNING);
+			trigger_error('Illegal value for $allow; expected integer between ' . ISPK_HOST_ALLOW_DNS . ' and ' . ISPK_HOST_ALLOW_ALL, E_USER_WARNING);
 		}
 
 		// determine whether the input is formed as an IP address
@@ -923,7 +923,7 @@ class Inspekt
 		// check input against domain name schema
 		$status = @preg_match('/^(?:[^\W_]((?:[^\W_]|-){0,61}[^\W_])?\.)+[a-zA-Z]{2,6}\.?$/', $value);
 		if ($status === false) {
-			user_error('Internal error: DNS validation failed', E_USER_WARNING);
+			trigger_error('Internal error: DNS validation failed', E_USER_WARNING);
 		}
 
 		// if the input passes as an Internet domain name, and domain names are allowed, then the hostname
@@ -941,7 +941,7 @@ class Inspekt
 		$status = @preg_match('/^(?:[^\W_](?:[^\W_]|-){0,61}[^\W_]\.)*(?:[^\W_](?:[^\W_]|-){0,61}[^\W_])\.?$/',
 		$value);
 		if ($status === FALSE) {
-			user_error('Internal error: local network name validation failed', E_USER_WARNING);
+			trigger_error('Internal error: local network name validation failed', E_USER_WARNING);
 		}
 
 		if ($status == 0) {
@@ -1115,7 +1115,7 @@ class Inspekt
 				return in_array($areaCode, $areaCodes);
 				break;
 			default:
-				user_error('isPhone() does not yet support this country.', E_USER_WARNING);
+				trigger_error('isPhone() does not yet support this country.', E_USER_WARNING);
 				return FALSE;
 				break;
 		}
@@ -1181,7 +1181,7 @@ class Inspekt
 
 			case ISPK_URI_ALLOW_ABSOLUTE:
 
-				user_error('isUri() for ISPK_URI_ALLOW_ABSOLUTE has not been implemented.', E_USER_WARNING);
+				trigger_error('isUri() for ISPK_URI_ALLOW_ABSOLUTE has not been implemented.', E_USER_WARNING);
 				return FALSE;
 
 //				$regex .= '&';
