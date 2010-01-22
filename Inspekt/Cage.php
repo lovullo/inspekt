@@ -452,7 +452,7 @@ class Inspekt_Cage implements IteratorAggregate, ArrayAccess, Countable {
 	 *
 	 * No other multi-character values are allowed.
 	 *
-	 * @param  string $value       Cage key to filter
+	 * @param  string $key         Cage key to filter
 	 * @param  array  $valid_chars Array of characters not to filter
 	 * @return mixed
 	 *
@@ -463,6 +463,24 @@ class Inspekt_Cage implements IteratorAggregate, ArrayAccess, Countable {
 			return false;
 		}
 		return Inspekt::getChars($this->_getValue($key), $valid_chars);
+	}
+
+	/**
+	 * Returns the value if and only if it is part of the supplied
+	 * "valid values" array, which is given as a second parameter.
+	 *
+	 * @param  mixed $key          Cage key to filter
+	 * @param  array $valid_values Array of characters not to filter
+	 * @return mixed
+	 *
+	 * @tag filter
+	 */
+	public function getOneOf($key, $valid_values)
+	{
+		if (!$this->keyExists($key)) {
+			return false;
+		}
+		return Inspekt::getOneOf($this->_getValue($key), $valid_values);
 	}
 
 	/**

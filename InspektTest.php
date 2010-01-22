@@ -914,6 +914,27 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 *
+	 */
+	public function testGetOneOfTest()
+	{
+		$this->assertSame("Wow!", Inspekt::getOneOf("Wow!", array("Wow!", "moo", "oink")));
+		$this->assertSame("",     Inspekt::getOneOf("Wow!", array("WoW!", "moo", "oink")));
+		$this->assertSame("",     Inspekt::getOneOf("Wow!", "moo"));
+		$this->assertSame(array(
+				"changed",
+				"added",
+				""),
+				Inspekt::getOneOf(array(
+					"changed",
+					"added",
+					"h4x"),
+					array("changed", "added", "deleted", "unchanged")
+				)
+		);
+	}
+
+	/**
 	 * @link https://www.paypal.com/en_US/vhelp/paypalmanager_help/credit_card_numbers.htm
 	 */
 	public function testIsCcnum()

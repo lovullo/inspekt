@@ -642,6 +642,29 @@ class Inspekt
 	}
 
 	/**
+	 * Returns the value if and only if it is part of the supplied
+	 * "valid values" array, which is given as a second parameter.
+	 *
+	 * @param  mixed $value        Value to filter
+	 * @param  array $valid_values Array of characters not to filter
+	 * @return mixed
+	 *
+	 * @tag filter
+	 */
+	static public function getOneOf($value, $valid_values)
+	{
+		if (Inspekt::isArrayOrArrayObject($value)) {
+			return Inspekt::_walkArray($value, 'getOneOf', $valid_values);
+		} else {
+			if (Inspekt::isOneOf($value, $valid_values) === true) {
+				return $value;
+			} else {
+				return '';
+			}
+		}
+	}
+
+	/**
      * Returns TRUE if every character is alphabetic or a digit,
      * FALSE otherwise.
      *
