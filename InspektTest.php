@@ -694,7 +694,7 @@ class InspektTest extends PHPUnit_Framework_TestCase
 
 	/**
 	 * session cages currently aren't supported
-	 * @expectedException PHPUnit_Framework_Error
+	 * @expectedException Exception
 	 */
 	public function testMakeSessionCage()
 	{
@@ -797,7 +797,7 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PHPUnit_Framework_Error
+	 * @expectedException Exception
 	 */
 	public function testGetCharListMissingSecondParam()
 	{
@@ -805,7 +805,7 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PHPUnit_Framework_Error
+	 * @expectedException Exception
 	 */
 	public function testGetCharListInvalidSecondParam()
 	{
@@ -813,7 +813,7 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PHPUnit_Framework_Error
+	 * @expectedException Exception
 	 */
 	public function testGetCharListInvalidSecondParamValueMacro()
 	{
@@ -821,7 +821,7 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PHPUnit_Framework_Error
+	 * @expectedException Exception
 	 */
 	public function testGetCharListInvalidSecondParamValueArray()
 	{
@@ -944,7 +944,7 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PHPUnit_Framework_Error
+	 * @expectedException Exception
 	 */
 	public function testIsCcnumUnsupportedOption()
 	{
@@ -971,7 +971,7 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PHPUnit_Framework_Error
+	 * @expectedException Exception
 	 */
 	public function testIsHostnameBadParamAllowType()
 	{
@@ -979,7 +979,7 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PHPUnit_Framework_Error
+	 * @expectedException Exception
 	 */
 	public function testIsHostnameBadParamAllowValue()
 	{
@@ -1155,7 +1155,7 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PHPUnit_Framework_Error
+	 * @expectedException Exception
 	 */
 	public function testIsPhoneUnsupportedCountryCode()
 	{
