@@ -1,13 +1,17 @@
 # Inspekt
 
+*slashbunny/inspekt*: This is my unmaintained version of Inspekt for legacy projects. You should probably not use this and instead stick to upstream.
+
+---
+
 *now on github!*
 
 _see LICENSE for copyright and license info_
 
-Ed Finkler    
-<coj@funkatron.com>    
-<http://inspekt.org>    
-<http://github.com/funkatron/inspekt>    
+Ed Finkler
+<coj@funkatron.com>
+<http://inspekt.org>
+<http://github.com/funkatron/inspekt>
 
 **Version 0.4.1**
 **2010-01-15**
@@ -100,11 +104,11 @@ Visit the Github site for Inspekt at <http://github.com/funkatron/inspekt>
 - added a number of @assert tests for phpunit testing
 - cleaned up function declarations so they would not raise STRICT notices
 - leveraged Filter Extention in a couple filter methods; can be turned off with `Inspekt::useFilterExt()`
-- added filter method Inspekt::noTagsOrSpecial() that strips tags, encodes 
+- added filter method Inspekt::noTagsOrSpecial() that strips tags, encodes
 `'"&<>`, and all low ascii chars (< 32)
 - upped recursion limit to 15
 - `Inspekt::_walkArray` will now convert a plain array into an ArrayObject (should it always? Not sure)
-- filter methods will now use `Inspekt::isArrayOrArrayObject()` to determine if 
+- filter methods will now use `Inspekt::isArrayOrArrayObject()` to determine if
 they need to walk the array
 - fixed some require_once statements to use `dirname()` resolution so fewer path issues pop up (they showed up when using phpunit)
 
