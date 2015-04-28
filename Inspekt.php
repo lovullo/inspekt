@@ -566,7 +566,7 @@ class Inspekt
             
             // Make sure we are working with an array
             if (!is_array($valid_chars)) {
-                trigger_error('The second parameter to getChars must be an array of valid characters', E_USER_ERROR);
+                Inspekt_Error::raiseError('The second parameter to getChars must be an array of valid characters', E_USER_ERROR);
                 return false;
             }
             
@@ -579,7 +579,7 @@ class Inspekt
             foreach ($valid_chars as $char) {
                 // Make sure there is nothing weird in the array
                 if (is_array($char) || is_object($char) || is_resource($char)) {
-                    trigger_error('Only single characters are allowed in the valid character array', E_USER_WARNING);
+                    Inspekt_Error::raiseError('Only single characters are allowed in the valid character array', E_USER_WARNING);
                     return false;
                 }
                 
@@ -597,7 +597,7 @@ class Inspekt
                         $regex_chars .= '0-9';
                         break;
                     default:
-                        trigger_error('Only single characters are allowed in the valid character array', E_USER_WARNING);
+                        Inspekt_Error::raiseError('Only single characters are allowed in the valid character array', E_USER_WARNING);
                         return false;
                     }
                 } else {
