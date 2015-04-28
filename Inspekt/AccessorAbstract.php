@@ -79,7 +79,7 @@ abstract class AccessorAbstract {
 		}
 				
 		if (!Inspekt::isArrayOrArrayObject($input)) {
-			trigger_error('$input must be an array or ArrayObject', E_USER_ERROR);
+			Inspekt_Error::raiseError('$input must be an array or ArrayObject', E_USER_ERROR);
 			return FALSE;
 		}
 
