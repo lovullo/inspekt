@@ -111,11 +111,11 @@ class InspektTest extends PHPUnit_Framework_TestCase
 		$this->assertSame(
 			array(
 				'/usr/lib/php',
-				'C:\WINDOWS\system32\drivers\etc',
+				'/etc',
 			),
 			Inspekt::getDir(array(
 				'/usr/lib/php/Pear.php',
-				'C:\WINDOWS\system32\drivers\etc\hosts',
+				'/etc/hosts',
 			))
 		);
 	}
@@ -797,7 +797,7 @@ class InspektTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException Exception
+	 * @expectedException PHPUnit_Framework_Error
 	 */
 	public function testGetCharListMissingSecondParam()
 	{
