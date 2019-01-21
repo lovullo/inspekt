@@ -1298,58 +1298,5 @@ class InspektTest extends PHPUnit_Framework_TestCase
         $this->assertSame($expect, Inspekt::noPath($input));
     }
 
-    /**
-     * @todo Implement testEscMySQL().
-     */
-    public function testEscMySQL()
-    {
-        if (!extension_loaded('mysql'))
-{
-            $this->markTestSkipped(
-              'The MySQL extension is not available.'
-            );
-        }
 
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testEscPgSQL().
-     */
-    public function testEscPgSQL()
-    {
-        if (!extension_loaded('pgsql'))
-{
-            $this->markTestSkipped(
-              'The PGSQL extension is not available.'
-            );
-        }
-
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testEscPgSQLBytea().
-     */
-    public function testEscPgSQLBytea()
-    {
-        if (!extension_loaded('pgsql'))
-{
-            $this->markTestSkipped(
-              'The PGSQL extension is not available.'
-            );
-        }
-
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
 }
-?>
