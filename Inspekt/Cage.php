@@ -59,7 +59,7 @@ class Inspekt_Cage implements IteratorAggregate, ArrayAccess, Countable
      *
      * @return Inspekt_Cage
      */
-    public function Inspekt_Cage()
+    public function __construct()
     {
         // placeholder -- we're using a factory here
     }

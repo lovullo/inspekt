@@ -74,7 +74,7 @@ class Inspekt_Supercage
      *
      * @return Inspekt_Supercage
      */
-    public function Inspekt_Supercage()
+    public function __construct()
     {
         // placeholder
     }
