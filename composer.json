@@ -1,5 +1,5 @@
 {
-    "name": "slashbunny/inspekt",
+    "name": "lovullo/inspekt",
     "description": "A PHP library that makes it easier to write secure web applications",
     "license": "BSD",
     "authors": [
@@ -11,6 +11,12 @@
     "require": {
     },
     "autoload": {
-        "psr-0": { "Inspekt": "" }
+        "psr-0": { "Inspekt": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "Tests\\": "tests/" }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8"
     }
 }
