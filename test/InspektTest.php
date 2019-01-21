@@ -1,7 +1,8 @@
 <?php
-require_once 'PHPUnit/Framework.php';
 
-require_once 'Inspekt.php';
+use \PhpUnit\Framework;
+
+require_once dirname( __FILE__ ) . '/../src/Inspekt.php';
 
 /**
  * Test class for Inspekt.
@@ -745,36 +746,6 @@ class InspektTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(Inspekt::getAlpha($input), $output);
     }
 
-    /**
-     *
-     */
-    public function testGetPath()
-    {
-        $expected  = dirname(__FILE__);
-        $this->assertTrue(Inspekt::getPath('./') == $expected);
-
-        $expected = dirname(dirname(dirname(__FILE__)));
-        $this->assertTrue(Inspekt::getPath('./../../') == $expected);
-    }
-
-    /**
-     *
-     */
-    public function testGetPathArray()
-    {
-        $this->assertSame(
-            array(
-                dirname(__FILE__),
-                dirname(dirname(dirname(__FILE__))),
-            ),
-            Inspekt::getPath(
-                array(
-                    './',
-                    './../../'
-                )
-            )
-        );
-    }
 
     /**
      *
@@ -796,13 +767,6 @@ class InspektTest extends PHPUnit_Framework_TestCase
         $this->assertSame($expect, Inspekt::getROT13($input));
     }
 
-    /**
-     * @expectedException PHPUnit_Framework_Error
-     */
-    public function testGetCharListMissingSecondParam()
-    {
-        Inspekt::getChars('MyInput!');
-    }
 
     /**
      * @expectedException Exception

@@ -11,6 +11,12 @@
     "require": {
     },
     "autoload": {
-        "psr-0": { "Inspekt": "" }
+        "psr-0": { "Inspekt": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "Tests\\": "tests/" }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8"
     }
 }

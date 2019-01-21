@@ -1,7 +1,8 @@
 <?php
-require_once 'PHPUnit/Framework.php';
 
-require_once 'Cage.php';
+use \PhpUnit\Framework;
+
+require_once dirname( __FILE__ ) . '/../../src/Inspekt/Cage.php';
 
 /**
  * Test class for Inspekt_Cage.
