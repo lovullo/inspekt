@@ -10,16 +10,17 @@
  * Error handling for Inspekt
  *
  * @package Inspekt
- *
  */
-class Inspekt_Error {
+class Inspekt_Error
+{
 
     /**
      * Constructor
      *
      * @return Inspekt_Error
      */
-    public function  __construct() {
+    public function  __construct()
+    {
 
     }
 

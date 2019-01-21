@@ -11,12 +11,12 @@
 /**
  * Inspekt_Error
  */
-require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Inspekt/Error.php');
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Inspekt/Error.php';
 
 /**
  * Inspekt_Cage
  */
-require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Inspekt/Cage.php');
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Inspekt/Cage.php';
 
 /**
  * Inspekt_Cage_Session
@@ -26,7 +26,7 @@ require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Inspekt/Cage.php');
 /**
  * Inspekt_Supercage
  */
-require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Inspekt/Supercage.php');
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Inspekt/Supercage.php';
 
 
 /**
@@ -72,7 +72,6 @@ define('ISPK_URI_ALLOW_COMMON', 1);
 
 /**
  * regex used to define what we're calling a valid domain name
- *
  */
 define('ISPK_DNS_VALID', '/^(?:[^\W_]((?:[^\W_]|-){0,61}[^\W_])?\.)+[a-zA-Z]{2,6}\.?$/');
 
@@ -111,7 +110,8 @@ class Inspekt
          */
         static $_instance;
 
-        if (!isset($_instance)) {
+        if (!isset($_instance))
+{
             $_instance = Inspekt_Cage::Factory($_SERVER, $config_file, '_SERVER', $strict);
         }
         $GLOBALS['HTTP_SERVER_VARS'] = null;
@@ -134,7 +134,8 @@ class Inspekt
          */
         static $_instance;
 
-        if (!isset($_instance)) {
+        if (!isset($_instance))
+{
             $_instance = Inspekt_Cage::Factory($_GET, $config_file, '_GET', $strict);
         }
         $GLOBALS['HTTP_GET_VARS'] = null;
@@ -157,7 +158,8 @@ class Inspekt
          */
         static $_instance;
 
-        if (!isset($_instance)) {
+        if (!isset($_instance))
+{
             $_instance = Inspekt_Cage::Factory($_POST, $config_file, '_POST', $strict);
         }
         $GLOBALS['HTTP_POST_VARS'] = null;
@@ -180,7 +182,8 @@ class Inspekt
          */
         static $_instance;
 
-        if (!isset($_instance)) {
+        if (!isset($_instance))
+{
             $_instance = Inspekt_Cage::Factory($_COOKIE, $config_file, '_COOKIE', $strict);
         }
         $GLOBALS['HTTP_COOKIE_VARS'] = null;
@@ -203,7 +206,8 @@ class Inspekt
          */
         static $_instance;
 
-        if (!isset($_instance)) {
+        if (!isset($_instance))
+{
             $_instance = Inspekt_Cage::Factory($_ENV, $config_file, '_ENV', $strict);
         }
         $GLOBALS['HTTP_ENV_VARS'] = null;
@@ -226,7 +230,8 @@ class Inspekt
          */
         static $_instance;
 
-        if (!isset($_instance)) {
+        if (!isset($_instance))
+{
             $_instance = Inspekt_Cage::Factory($_FILES, $config_file, '_FILES', $strict);
         }
         $GLOBALS['HTTP_POST_FILES'] = null;
@@ -252,11 +257,13 @@ class Inspekt
          */
         static $_instance;
 
-        if (!isset($_SESSION)) {
+        if (!isset($_SESSION))
+{
             return null;
         }
 
-        if (!isset($_instance)) {
+        if (!isset($_instance))
+{
             $_instance = Inspekt_Cage_Session::Factory($_SESSION, $config_file, '_SESSION', $strict);
         }
         $GLOBALS['HTTP_SESSION_VARS'] = null;
@@ -277,7 +284,8 @@ class Inspekt
          */
         static $_scinstance;
 
-        if (!isset($_scinstance)) {
+        if (!isset($_scinstance))
+{
             $_scinstance = Inspekt_Supercage::Factory($config_file, $strict);
         }
         return $_scinstance;
@@ -294,10 +302,11 @@ class Inspekt
      */
     static public function useFilterExt($state = null)
     {
-        if (isset($state)) {
-            Inspekt::$useFilterExtension = (bool) $state;
+        if (isset($state))
+{
+            self::$useFilterExtension = (bool)$state;
         }
-        return Inspekt::$useFilterExtension;
+        return self::$useFilterExtension;
     }
 
     /**
@@ -312,40 +321,46 @@ class Inspekt
      * @param callback          $callback Filtering function to call
      * @param mixed             $userdata (Optional) If provided, will be passed as the second parameter to callback
      * @return array
-     *
      */
     static protected function _walkArray($input, $callback, $userdata = "")
     {
         // If Callback is a function name, create proper callback array
-        if (!is_array($callback)) {
+        if (!is_array($callback))
+{
             $callback = array(__CLASS__, $callback);
         }
-        
+
         // Input should be an array
-        if (!self::isArrayObject($input) && !is_array($input)) {
+        if (!self::isArrayObject($input) && !is_array($input))
+{
             Inspekt_Error::raiseError('$input must be an array or ArrayObject', E_USER_ERROR);
             return false;
         }
-        
+
         // Callback should be valid
-        if (!is_callable($callback)) {
+        if (!is_callable($callback))
+{
             Inspekt_Error::raiseError('Inspekt callback ' . $callback[0] . '::' . $callback[1] . ' is invalid', E_USER_ERROR);
             return false;
         }
-        
-        foreach ($input as $key => $val) {
-            if (is_array($val)) {
+
+        foreach ($input as $key => $val)
+{
+            if (is_array($val))
+{
                 $input[$key] = self::_walkArray($val, $callback, $userdata);
-            } else {
+            }
+            else
+{
                 $val = call_user_func($callback, $val, $userdata);
                 $input[$key] = $val;
             }
         }
-        
+
         return $input;
     }
 
-    
+
     /**
      * Checks to see if this is an ArrayObject
      * @param mixed
@@ -382,12 +397,14 @@ class Inspekt
      */
     static public function convertArrayToArrayObject(&$arr)
     {
-        foreach ($arr as $key => $value) {
-            if (is_array($value)) {
+        foreach ($arr as $key => $value)
+{
+            if (is_array($value))
+{
                 $value = new ArrayObject($value);
                 $arr[$key] = $value;
                 //echo $key." is an array\n";
-                Inspekt::convertArrayToArrayObject($arr[$key]);
+                self::convertArrayToArrayObject($arr[$key]);
             }
         }
 
@@ -404,9 +421,12 @@ class Inspekt
      */
     static public function getAlpha($value)
     {
-        if (Inspekt::isArrayOrArrayObject($value)) {
-            return Inspekt::_walkArray($value, 'getAlpha');
-        } else {
+        if (self::isArrayOrArrayObject($value))
+{
+            return self::_walkArray($value, 'getAlpha');
+        }
+        else
+{
             return preg_replace('/[^[:alpha:]]/', '', $value);
         }
     }
@@ -423,9 +443,12 @@ class Inspekt
      */
     static public function getAlnum($value)
     {
-        if (Inspekt::isArrayOrArrayObject($value)) {
-            return Inspekt::_walkArray($value, 'getAlnum');
-        } else {
+        if (self::isArrayOrArrayObject($value))
+{
+            return self::_walkArray($value, 'getAlnum');
+        }
+        else
+{
             return preg_replace('/[^[:alnum:]]/', '', $value);
         }
     }
@@ -442,9 +465,12 @@ class Inspekt
      */
     static public function getDigits($value)
     {
-        if (Inspekt::isArrayOrArrayObject($value)) {
-            return Inspekt::_walkArray($value, 'getDigits');
-        } else {
+        if (self::isArrayOrArrayObject($value))
+{
+            return self::_walkArray($value, 'getDigits');
+        }
+        else
+{
             return preg_replace('/[^[:digit:]]/', '', $value);
         }
     }
@@ -461,9 +487,12 @@ class Inspekt
      */
     static public function getDir($value)
     {
-        if (Inspekt::isArrayOrArrayObject($value)) {
-            return Inspekt::_walkArray($value, 'getDir');
-        } else {
+        if (self::isArrayOrArrayObject($value))
+{
+            return self::_walkArray($value, 'getDir');
+        }
+        else
+{
             return dirname($value);
         }
     }
@@ -481,10 +510,13 @@ class Inspekt
      */
     static public function getInt($value)
     {
-        if (Inspekt::isArrayOrArrayObject($value)) {
-            return Inspekt::_walkArray($value, 'getInt');
-        } else {
-            return (int) $value;
+        if (self::isArrayOrArrayObject($value))
+{
+            return self::_walkArray($value, 'getInt');
+        }
+        else
+{
+            return (int)$value;
         }
     }
 
@@ -498,10 +530,13 @@ class Inspekt
      */
     static public function getFloat($value)
     {
-        if (Inspekt::isArrayOrArrayObject($value)) {
-            return Inspekt::_walkArray($value, 'getFloat');
-        } else {
-            return (float) $value;
+        if (self::isArrayOrArrayObject($value))
+{
+            return self::_walkArray($value, 'getFloat');
+        }
+        else
+{
+            return (float)$value;
         }
     }
 
@@ -515,9 +550,12 @@ class Inspekt
      */
     static public function getPath($value)
     {
-        if (Inspekt::isArrayOrArrayObject($value)) {
-            return Inspekt::_walkArray($value, 'getPath');
-        } else {
+        if (self::isArrayOrArrayObject($value))
+{
+            return self::_walkArray($value, 'getPath');
+        }
+        else
+{
             return realpath($value);
         }
     }
@@ -532,9 +570,12 @@ class Inspekt
      */
     static public function getROT13($value)
     {
-        if (Inspekt::isArrayOrArrayObject($value)) {
-            return Inspekt::_walkArray($value, 'getROT13');
-        } else {
+        if (self::isArrayOrArrayObject($value))
+{
+            return self::_walkArray($value, 'getROT13');
+        }
+        else
+{
             return str_rot13($value);
         }
     }
@@ -559,63 +600,78 @@ class Inspekt
      */
     static public function getChars($value, $valid_chars)
     {
-        if (Inspekt::isArrayOrArrayObject($value)) {
-            return Inspekt::_walkArray($value, 'getChars', $valid_chars);
-        } else {
+        if (self::isArrayOrArrayObject($value))
+{
+            return self::_walkArray($value, 'getChars', $valid_chars);
+        }
+        else
+{
             $regex_chars = "";
-            
+
             // Make sure we are working with an array
-            if (!is_array($valid_chars)) {
+            if (!is_array($valid_chars))
+        {
                 Inspekt_Error::raiseError('The second parameter to getChars must be an array of valid characters', E_USER_ERROR);
                 return false;
             }
-            
+
             // If the array is empty, return no value
-            if (empty($valid_chars)) {
+            if (empty($valid_chars))
+        {
                 return '';
             }
-            
+
             // Loop over provided character list and build regular expression
-            foreach ($valid_chars as $char) {
+            foreach ($valid_chars as $char)
+        {
                 // Make sure there is nothing weird in the array
-                if (is_array($char) || is_object($char) || is_resource($char)) {
+                if (is_array($char) || is_object($char) || is_resource($char))
+{
                     Inspekt_Error::raiseError('Only single characters are allowed in the valid character array', E_USER_WARNING);
                     return false;
                 }
-                
+
                 // If the character isn't exactly 1 in length, it's either a valid "macro" or an error
-                if (strlen($char) != 1) {
+                if (strlen($char) != 1)
+{
                     // Handle "macro" values
                     switch ($char) {
-                    case 'a-z':
-                        $regex_chars .= 'a-z';
-                        break;
-                    case 'A-Z':
-                        $regex_chars .= 'A-Z';
-                        break;
-                    case '0-9':
-                        $regex_chars .= '0-9';
-                        break;
-                    default:
-                        Inspekt_Error::raiseError('Only single characters are allowed in the valid character array', E_USER_WARNING);
-                        return false;
+                        case 'a-z':
+                            $regex_chars .= 'a-z';
+                            break;
+                        case 'A-Z':
+                            $regex_chars .= 'A-Z';
+                            break;
+                        case '0-9':
+                            $regex_chars .= '0-9';
+                            break;
+                        default:
+                            Inspekt_Error::raiseError('Only single characters are allowed in the valid character array', E_USER_WARNING);
+                            return false;
                     }
-                } else {
-                    if ($char == "-") {
+                }
+                else
+{
+                    if ($char == "-")
+                {
                         // The '-' inside regex square brackets denotes a range separator;
                         // If you want to test as a literal (which we do in this case), it must be placed
                         // first (or last, technically).
                         $regex_chars = "-" . $regex_chars;
-                    } elseif ($char == "/") {
+                    }
+                    elseif ($char == "/")
+                {
                         // The / character is used as a delimiter in preg_replace below, so it must be escaped
                         $regex_chars .= "\/";
-                    } else {
-                        // Add Single Character to "Allowed" Regex List
-                        $regex_chars .= preg_quote($char);
+                    }
+                    else
+                {
+                // Add Single Character to "Allowed" Regex List
+                $regex_chars .= preg_quote($char);
                     }
                 }
             }
-            
+
             // Apply Regex to value
             return preg_replace('/[^' . $regex_chars . ']/', '', $value);
         }
@@ -633,12 +689,18 @@ class Inspekt
      */
     static public function getOneOf($value, $valid_values)
     {
-        if (Inspekt::isArrayOrArrayObject($value)) {
-            return Inspekt::_walkArray($value, 'getOneOf', $valid_values);
-        } else {
-            if (Inspekt::isOneOf($value, $valid_values) === true) {
+        if (self::isArrayOrArrayObject($value))
+{
+            return self::_walkArray($value, 'getOneOf', $valid_values);
+        }
+        else
+{
+            if (self::isOneOf($value, $valid_values) === true)
+        {
                 return $value;
-            } else {
+            }
+            else
+        {
                 return '';
             }
         }
@@ -707,13 +769,15 @@ class Inspekt
     static public function isBetween($value, $min, $max, $inc = true)
     {
         if ($value > $min &&
-            $value < $max) {
+            $value < $max)
+{
             return true;
         }
 
         if ($inc &&
             $value >= $min &&
-            $value <= $max) {
+            $value <= $max)
+{
             return true;
         }
 
@@ -736,21 +800,24 @@ class Inspekt
         /**
          * @todo Type-specific checks
          */
-        if (isset($type)) {
+        if (isset($type))
+{
             Inspekt_Error::raiseError('Type-specific cc checks are not yet supported');
         }
 
         $value = self::getDigits($value);
         $length = strlen($value);
 
-        if ($length < 13 || $length > 19) {
+        if ($length < 13 || $length > 19)
+{
             return false;
         }
 
         $sum = 0;
         $weight = 2;
 
-        for ($i = $length - 2; $i >= 0; $i--) {
+        for ($i = $length - 2; $i >= 0; $i--)
+{
             $digit = $weight * $value[$i];
             $sum += floor($digit / 10) + $digit % 10;
             $weight = $weight % 2 + 1;
@@ -797,7 +864,7 @@ class Inspekt
      */
     static public function isDigits($value)
     {
-        return ctype_digit((string) $value);
+        return ctype_digit((string)$value);
     }
 
     /**
@@ -819,7 +886,7 @@ class Inspekt
      */
     static public function isEmail($value)
     {
-        return (bool) preg_match(ISPK_EMAIL_VALID, $value);
+        return (bool)preg_match(ISPK_EMAIL_VALID, $value);
     }
 
     /**
@@ -873,7 +940,6 @@ class Inspekt
      *
      * @assert('6F') === true
      * @assert('F6') === true
-     *
      */
     static public function isHex($value)
     {
@@ -895,11 +961,13 @@ class Inspekt
      */
     static public function isHostname($value, $allow = ISPK_HOST_ALLOW_ALL)
     {
-        if (!is_numeric($allow) || !is_int($allow)) {
+        if (!is_numeric($allow) || !is_int($allow))
+{
             Inspekt_Error::raiseError('Illegal value for $allow; expected an integer', E_USER_WARNING);
         }
 
-        if ($allow < ISPK_HOST_ALLOW_DNS || ISPK_HOST_ALLOW_ALL < $allow) {
+        if ($allow < ISPK_HOST_ALLOW_DNS || ISPK_HOST_ALLOW_ALL < $allow)
+{
             Inspekt_Error::raiseError('Illegal value for $allow; expected integer between ' . ISPK_HOST_ALLOW_DNS . ' and ' . ISPK_HOST_ALLOW_ALL, E_USER_WARNING);
         }
 
@@ -907,9 +975,11 @@ class Inspekt
         $status = self::isIp($value);
 
         // if the input looks like an IP address
-        if ($status) {
+        if ($status)
+{
             // if IP addresses are not allowed, then fail validation
-            if (($allow & ISPK_HOST_ALLOW_IP) == 0) {
+            if (($allow & ISPK_HOST_ALLOW_IP) == 0)
+{
                 return false;
             }
 
@@ -919,31 +989,38 @@ class Inspekt
 
         // check input against domain name schema
         $status = @preg_match('/^(?:[^\W_]((?:[^\W_]|-){0,61}[^\W_])?\.)+[a-zA-Z]{2,6}\.?$/', $value);
-        if ($status === false) {
+        if ($status === false)
+{
             Inspekt_Error::raiseError('Internal error: DNS validation failed', E_USER_WARNING);
         }
 
         // if the input passes as an Internet domain name, and domain names are allowed, then the hostname
         // passes validation
-        if ($status == 1 && ($allow & ISPK_HOST_ALLOW_DNS) != 0) {
+        if ($status == 1 && ($allow & ISPK_HOST_ALLOW_DNS) != 0)
+{
             return true;
         }
 
         // if local network names are not allowed, then fail validation
-        if (($allow & ISPK_HOST_ALLOW_LOCAL) == 0) {
+        if (($allow & ISPK_HOST_ALLOW_LOCAL) == 0)
+{
             return false;
         }
 
         // check input against local network name schema; last chance to pass validation
         $status = @preg_match('/^(?:[^\W_](?:[^\W_]|-){0,61}[^\W_]\.)*(?:[^\W_](?:[^\W_]|-){0,61}[^\W_])\.?$/',
             $value);
-        if ($status === false) {
+        if ($status === false)
+{
             Inspekt_Error::raiseError('Internal error: local network name validation failed', E_USER_WARNING);
         }
 
-        if ($status == 0) {
+        if ($status == 0)
+{
             return false;
-        } else {
+        }
+        else
+{
             return true;
         }
     }
@@ -967,14 +1044,21 @@ class Inspekt
         $value = str_replace($locale['thousands_sep'], '', $value);
 
         $is_valid = (
-            is_numeric($value)  // Must be able to be converted to a number
-                && preg_replace("/^-?([0-9]+)$/", "", $value) == ""  // Must be an integer (no floats or e-powers)
-                && bccomp($value, "-9223372036854775807") >= 0  // Must be greater than than min of 64-bit
-                && bccomp($value, "9223372036854775807") <= 0  // Must be less than max of 64-bit
+            is_numeric($value)
+// Must be able to be converted to a number
+                && preg_replace("/^-?([0-9]+)$/", "", $value) == ""
+// Must be an integer (no floats or e-powers)
+                && bccomp($value, "-9223372036854775807") >= 0
+// Must be greater than than min of 64-bit
+                && bccomp($value, "9223372036854775807") <= 0
+// Must be less than max of 64-bit
         );
-        if (!$is_valid) {
+        if (!$is_valid)
+{
             return false;
-        } else {
+        }
+        else
+{
             return true;
         }
         // return (strval(intval($value)) === $value);
@@ -990,7 +1074,7 @@ class Inspekt
      */
     static public function isIp($value)
     {
-        return (bool) ip2long($value);
+        return (bool)ip2long($value);
     }
 
     /**
@@ -1024,7 +1108,8 @@ class Inspekt
          * value.
          */
 
-        if (is_string($allowed)) {
+        if (is_string($allowed))
+{
             $allowed = str_split($allowed);
         }
 
@@ -1043,13 +1128,15 @@ class Inspekt
      */
     static public function isPhone($value, $country = 'US')
     {
-        if (!ctype_digit($value)) {
+        if (!ctype_digit($value))
+{
             return false;
         }
 
         switch ($country) {
             case 'US':
-                if (strlen($value) != 10) {
+                if (strlen($value) != 10)
+{
                     return false;
                 }
 
@@ -1097,7 +1184,8 @@ class Inspekt
                     919, 920, 925, 928, 931, 936, 937, 939,
                     940, 941, 947, 949, 951, 952, 954, 956,
                     959, 970, 971, 972, 973, 978, 979, 980,
-                    985, 989);
+                    985, 989
+                    );
 
                 return in_array($areaCode, $areaCodes);
                 break;
@@ -1120,7 +1208,7 @@ class Inspekt
      */
     static public function isRegex($value, $pattern)
     {
-        return (bool) preg_match($pattern, $value);
+        return (bool)preg_match($pattern, $value);
     }
 
     /**
@@ -1146,18 +1234,27 @@ class Inspekt
             case ISPK_URI_ALLOW_COMMON:
 
                 $regex .= '&';
-                $regex .= '^(ftp|http|https):';                 // protocol
-                $regex .= '(//)';                               // authority-start
-                $regex .= '([-a-z0-9/~;:@=+$,.!*()\']+@)?';     // userinfo
+                $regex .= '^(ftp|http|https):';
+// protocol
+                $regex .= '(//)';
+// authority-start
+                $regex .= '([-a-z0-9/~;:@=+$,.!*()\']+@)?';
+// userinfo
                 $regex .= '(';
-                $regex .= '((?:[^\W_]((?:[^\W_]|-){0,61}[^\W_])?\.)+[a-zA-Z]{2,6}\.?)';     // domain name
+                $regex .= '((?:[^\W_]((?:[^\W_]|-){0,61}[^\W_])?\.)+[a-zA-Z]{2,6}\.?)';
+// domain name
                 $regex .= '|';
-                $regex .= '([0-9]{1,3}(\.[0-9]{1,3})?(\.[0-9]{1,3})?(\.[0-9]{1,3})?)';  // OR ipv4
+                $regex .= '([0-9]{1,3}(\.[0-9]{1,3})?(\.[0-9]{1,3})?(\.[0-9]{1,3})?)';
+// OR ipv4
                 $regex .= ')';
-                $regex .= '(:([0-9]*))?';                       // port
-                $regex .= '(/((%[0-9a-f]{2}|[-_a-z0-9/~;:@=+$,.!*()\'\&]*)*)/?)?';  // path
-                $regex .= '(\?[^#]*)?';                         // query
-                $regex .= '(#([-a-z0-9_]*))?';                  // anchor (fragment)
+                $regex .= '(:([0-9]*))?';
+// port
+                $regex .= '(/((%[0-9a-f]{2}|[-_a-z0-9/~;:@=+$,.!*()\'\&]*)*)/?)?';
+// path
+                $regex .= '(\?[^#]*)?';
+// query
+                $regex .= '(#([-a-z0-9_]*))?';
+// anchor (fragment)
                 $regex .= '$&i';
                 //echo "<pre>"; echo print_r($regex, true); echo "</pre>\n";
 
@@ -1189,9 +1286,12 @@ class Inspekt
         }
         $result = preg_match($regex, $value);
 
-        if ($result === 1) {
+        if ($result === 1)
+{
             return true;
-        } else {
+        }
+        else
+{
             return false;
         }
     }
@@ -1206,7 +1306,7 @@ class Inspekt
      */
     static public function isZip($value)
     {
-        return (bool) preg_match('/(^\d{5}$)|(^\d{5}-\d{4}$)/', $value);
+        return (bool)preg_match('/(^\d{5}$)|(^\d{5}-\d{4}$)/', $value);
     }
 
     /**
@@ -1221,12 +1321,18 @@ class Inspekt
      */
     static public function noTags($value)
     {
-        if (Inspekt::isArrayOrArrayObject($value)) {
-            return Inspekt::_walkArray($value, 'noTags');
-        } else {
-            if (Inspekt::useFilterExt()) {
+        if (self::isArrayOrArrayObject($value))
+{
+            return self::_walkArray($value, 'noTags');
+        }
+        else
+{
+            if (self::useFilterExt())
+        {
                 return filter_var($value, FILTER_SANITIZE_STRING);
-            } else {
+            }
+            else
+        {
                 return strip_tags($value);
             }
         }
@@ -1241,28 +1347,36 @@ class Inspekt
      * @return @mixed
      *
      * @tag filter
-     *
      */
     static public function noTagsOrSpecial($value)
     {
-        if (Inspekt::isArrayOrArrayObject($value)) {
-            return Inspekt::_walkArray($value, 'noTagsOrSpecial');
-        } else {
-            if (Inspekt::useFilterExt()) {
+        if (self::isArrayOrArrayObject($value))
+{
+            return self::_walkArray($value, 'noTagsOrSpecial');
+        }
+        else
+{
+            if (self::useFilterExt())
+        {
                 $newval = filter_var($value, FILTER_SANITIZE_STRING);
                 $newval = filter_var($newval, FILTER_SANITIZE_SPECIAL_CHARS);
                 return $newval;
-            } else {
+            }
+            else
+        {
                 $newval = strip_tags($value);
-                $newval = htmlspecialchars($newval, ENT_QUOTES, 'UTF-8'); // for sake of simplicity and safety we assume UTF-8
+                $newval = htmlspecialchars($newval, ENT_QUOTES, 'UTF-8');
+        // for sake of simplicity and safety we assume UTF-8
 
                 /*
                     convert low ascii chars to entities
                 */
                 $newval = str_split($newval);
-                for ($i=0; $i < count($newval); $i++) {
+                for ($i = 0; $i < count($newval); $i++)
+        {
                     $ascii_code = ord($newval[$i]);
-                    if ($ascii_code < 32) {
+                    if ($ascii_code < 32)
+{
                         $newval[$i] = "&#{$ascii_code};";
                     }
                 }
@@ -1283,9 +1397,12 @@ class Inspekt
      */
     static public function noPath($value)
     {
-        if (Inspekt::isArrayOrArrayObject($value)) {
-            return Inspekt::_walkArray($value, 'noPath');
-        } else {
+        if (self::isArrayOrArrayObject($value))
+{
+            return self::_walkArray($value, 'noPath');
+        }
+        else
+{
             return basename($value);
         }
     }
@@ -1303,13 +1420,19 @@ class Inspekt
      */
     static public function escMySQL($value, $conn = null)
     {
-        if (Inspekt::isArrayOrArrayObject($value)) {
-            return Inspekt::_walkArray($value, 'escMySQL');
-        } else {
+        if (self::isArrayOrArrayObject($value))
+{
+            return self::_walkArray($value, 'escMySQL');
+        }
+        else
+{
             //no explicit func to check if the connection is live, but if it's not $conn would be false
-            if (isset($conn) && is_resource($conn)) {
+            if (isset($conn) && is_resource($conn))
+        {
                 return mysql_real_escape_string($value, $conn);
-            } else {
+            }
+            else
+        {
                 return mysql_real_escape_string($value);
             }
         }
@@ -1328,13 +1451,19 @@ class Inspekt
      */
     static public function escPgSQL($value, $conn = null)
     {
-        if (Inspekt::isArrayOrArrayObject($value)) {
-            return Inspekt::_walkArray($value, 'escPgSQL');
-        } else {
+        if (self::isArrayOrArrayObject($value))
+{
+            return self::_walkArray($value, 'escPgSQL');
+        }
+        else
+{
             //might also check is_resource if pg_connection_status is too much
-            if (isset($conn) && pg_connection_status($conn) === PGSQL_CONNECTION_OK) {
+            if (isset($conn) && pg_connection_status($conn) === PGSQL_CONNECTION_OK)
+        {
                 return pg_escape_string($conn, $value);
-            } else {
+            }
+            else
+        {
                 return pg_escape_string($value);
             }
         }
@@ -1351,13 +1480,19 @@ class Inspekt
      */
     static public function escPgSQLBytea($value, $conn = null)
     {
-        if (Inspekt::isArrayOrArrayObject($value)) {
-            return Inspekt::_walkArray($value, 'escPgSQL');
-        } else {
+        if (self::isArrayOrArrayObject($value))
+{
+            return self::_walkArray($value, 'escPgSQL');
+        }
+        else
+{
             //might also check is_resource if pg_connection_status is too much
-            if (isset($conn) && pg_connection_status($conn) === PGSQL_CONNECTION_OK) {
+            if (isset($conn) && pg_connection_status($conn) === PGSQL_CONNECTION_OK)
+        {
                 return pg_escape_bytea($conn, $value);
-            } else {
+            }
+            else
+        {
                 return pg_escape_bytea($value);
             }
         }

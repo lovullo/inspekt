@@ -15,52 +15,65 @@ require_once dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'Cage.php';
 /**
  * @package Inspekt
  */
-class Inspekt_Cage_Session extends Inspekt_Cage {
-	
-	static public function Factory(&$source, $conf_file = NULL, $conf_section = NULL, $strict = TRUE) {
+class Inspekt_Cage_Session extends Inspekt_Cage
+{
 
-		if (!is_array($source)) {
-			Inspekt_Error::raiseError('$source '.$source.' is not an array', E_USER_NOTICE);
-		}
+    static public function Factory(&$source, $conf_file = null, $conf_section = null, $strict = true)
+    {
+        if (!is_array($source))
+{
+            Inspekt_Error::raiseError('$source '.$source.' is not an array', E_USER_NOTICE);
+        }
 
-		$cage = new Inspekt_Cage_Session();
-		$cage->_setSource($source);
-		$cage->_parseAndApplyAutoFilters($conf_file);
-		
-		if (ini_get('session.use_cookies') || ini_get('session.use_only_cookies') ) {
-			if (isset($_COOKIE) && isset($_COOKIE[session_name()])) {
-				session_id($_COOKIE[session_name()]);
-			} elseif ($cookie = Inspekt::makeSessionCage()) {
-				session_id($cookie->getAlnum(session_name()));
-			}
-		} else { // we're using session ids passed via GET
-			if (isset($_GET) && isset($_GET[session_name()])) {
-				session_id($_GET[session_name()]);
-			} elseif ($cookie = Inspekt::makeSessionCage()) {
-				session_id($cookie->getAlnum(session_name()));
-			}
-		}
-		
-		
-		if ($strict) {
-			$source = NULL;
-		}
+        $cage = new Inspekt_Cage_Session();
+        $cage->_setSource($source);
+        $cage->_parseAndApplyAutoFilters($conf_file);
 
-		return $cage;
-		
-		register_shutdown_function();
-		
-		register_shutdown_function( array($this, '_repopulateSession') );
-		
-	}
-	
-	
-	
-	protected function _repopulateSession() {
-		$_SESSION = array();
-		$_SESSION = $this->_source;
-	}
-	
+        if (ini_get('session.use_cookies') || ini_get('session.use_only_cookies') )
+{
+            if (isset($_COOKIE) && isset($_COOKIE[session_name()]))
+{
+                session_id($_COOKIE[session_name()]);
+            }
+            elseif ($cookie = Inspekt::makeSessionCage())
+{
+                session_id($cookie->getAlnum(session_name()));
+            }
+        }
+        else
+{
+        // we're using session ids passed via GET
+            if (isset($_GET) && isset($_GET[session_name()]))
+        {
+                session_id($_GET[session_name()]);
+            }
+            elseif ($cookie = Inspekt::makeSessionCage())
+        {
+                session_id($cookie->getAlnum(session_name()));
+            }
+        }
 
-	
+        if ($strict)
+{
+            $source = null;
+        }
+
+        return $cage;
+
+        register_shutdown_function();
+
+        register_shutdown_function( array($this, '_repopulateSession') );
+
+    }
+
+
+
+    protected function _repopulateSession()
+    {
+        $_SESSION = array();
+        $_SESSION = $this->_source;
+    }
+
+
+
 }
