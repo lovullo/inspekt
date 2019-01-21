@@ -1048,10 +1048,6 @@ class Inspekt
 // Must be able to be converted to a number
                 && preg_replace("/^-?([0-9]+)$/", "", $value) == ""
 // Must be an integer (no floats or e-powers)
-                && bccomp($value, "-9223372036854775807") >= 0
-// Must be greater than than min of 64-bit
-                && bccomp($value, "9223372036854775807") <= 0
-// Must be less than max of 64-bit
         );
         if (!$is_valid)
 {
